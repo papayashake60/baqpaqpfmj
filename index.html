@@ -1,0 +1,3199 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>MergeMedia · Teacher Channels</title>
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0-beta3/css/all.min.css">
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+            font-family: 'Inter', -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif;
+        }
+
+        body {
+            background-color: #d4e6f5;
+            color: #1a1a1a;
+            line-height: 1.5;
+        }
+
+        .app {
+            max-width: 1440px;
+            margin: 0 auto;
+            padding: 0 20px 40px;
+        }
+
+        /* AUTH SCREEN */
+        .auth-screen {
+            display: none;
+            min-height: 100vh;
+            align-items: center;
+            justify-content: center;
+            background: #d4e6f5;
+            padding: 20px;
+        }
+        .auth-card {
+            background: white;
+            border-radius: 16px;
+            padding: 40px 36px;
+            width: 100%;
+            max-width: 380px;
+            box-shadow: 0 20px 60px rgba(0,0,0,0.15);
+            border: 1px solid #b0c8dd;
+            text-align: center;
+        }
+        .auth-logo {
+            height: 56px;
+            width: auto;
+            margin-bottom: 16px;
+        }
+        .auth-card h2 {
+            color: #0b1e2e;
+            font-size: 22px;
+            margin-bottom: 6px;
+        }
+        .auth-subtitle {
+            color: #4a6a8a;
+            font-size: 14px;
+            margin-bottom: 22px;
+        }
+        .auth-field {
+            text-align: left;
+            margin-bottom: 14px;
+        }
+        .auth-field label {
+            display: block;
+            font-size: 13px;
+            font-weight: 600;
+            color: #1f3a57;
+            margin-bottom: 5px;
+        }
+        .auth-field input {
+            width: 100%;
+            padding: 10px 12px;
+            border: 1px solid #b0c8dd;
+            border-radius: 8px;
+            font-size: 14px;
+            background: #f2f8ff;
+            color: #0b1e2e;
+        }
+        .auth-field input:focus {
+            outline: none;
+            border-color: #1f5a8a;
+        }
+        .auth-error {
+            display: none;
+            background: #f8d7da;
+            color: #721c24;
+            border: 1px solid #f5c6cb;
+            border-radius: 8px;
+            padding: 8px 12px;
+            font-size: 13px;
+            margin-bottom: 12px;
+        }
+        .auth-submit-btn {
+            width: 100%;
+            background: #1f5a8a;
+            color: white;
+            border: none;
+            border-radius: 40px;
+            padding: 11px 20px;
+            font-weight: 600;
+            font-size: 14px;
+            cursor: pointer;
+            transition: 0.15s;
+        }
+        .auth-submit-btn:hover { background: #164a73; }
+        .auth-submit-btn:disabled { opacity: 0.6; cursor: not-allowed; }
+        .auth-toggle-btn {
+            margin-top: 16px;
+            background: none;
+            border: none;
+            color: #1f5a8a;
+            font-size: 13px;
+            font-weight: 600;
+            cursor: pointer;
+            text-decoration: underline;
+        }
+
+        /* NAVBAR BRAND LOGO (upper-left) */
+        .brand-logo {
+            height: 34px;
+            width: auto;
+            display: block;
+        }
+        .user-menu {
+            display: flex;
+            align-items: center;
+            gap: 8px;
+            font-size: 13px;
+            color: #1f3a57;
+            font-weight: 600;
+        }
+        .logout-btn {
+            background: #e8f0fa;
+            border: 1px solid #b0c8dd;
+            color: #1f3a57;
+            border-radius: 20px;
+            padding: 5px 14px;
+            font-size: 12px;
+            font-weight: 600;
+            cursor: pointer;
+        }
+        .logout-btn:hover { background: #d4e6f5; }
+
+        /* Per-video download controls */
+        .download-toggle-row {
+            display: flex;
+            align-items: center;
+            gap: 8px;
+            font-size: 12px;
+            color: #1f3a57;
+        }
+        .file-download-badge {
+            display: inline-flex;
+            align-items: center;
+            gap: 4px;
+            font-size: 11px;
+            font-weight: 600;
+            padding: 2px 8px;
+            border-radius: 12px;
+        }
+        .file-download-badge.on { background: #d4edda; color: #155724; }
+        .file-download-badge.off { background: #e2e3e5; color: #41464b; }
+        .download-video-btn {
+            background: #28a745;
+            color: white;
+            border: none;
+            border-radius: 20px;
+            padding: 6px 14px;
+            font-size: 13px;
+            font-weight: 600;
+            cursor: pointer;
+            display: inline-flex;
+            align-items: center;
+            gap: 6px;
+        }
+        .download-video-btn:hover { background: #218838; }
+        .download-video-btn:disabled {
+            background: #b0c8dd;
+            cursor: not-allowed;
+        }
+
+        /* Trial Banner */
+        #trialBanner {
+            display: none;
+            background: #1f5a8a;
+            color: white;
+            padding: 10px 20px;
+            text-align: center;
+            font-size: 14px;
+            border-radius: 0 0 8px 8px;
+            margin: 0 -20px 10px -20px;
+            box-shadow: 0 2px 8px rgba(0,0,0,0.1);
+        }
+        #trialBanner .warning {
+            background: #dc3545;
+            padding: 2px 10px;
+            border-radius: 20px;
+            margin-left: 10px;
+            font-weight: 600;
+        }
+        @media (max-width: 780px) {
+            #trialBanner {
+                font-size: 12px;
+                padding: 8px 12px;
+                margin: 0 -20px 8px -20px;
+            }
+        }
+
+        .navbar {
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+            padding: 16px 0;
+            border-bottom: 1px solid #b0c8dd;
+            flex-wrap: wrap;
+            gap: 12px;
+            background-color: #c4d9ed;
+            margin: 0 -20px;
+            padding-left: 20px;
+            padding-right: 20px;
+            border-radius: 0 0 12px 12px;
+        }
+
+        .nav-left {
+            display: flex;
+            align-items: center;
+            gap: 24px;
+        }
+
+        .logo {
+            display: flex;
+            align-items: center;
+            gap: 8px;
+            font-size: 24px;
+            font-weight: 700;
+            color: #0b1e2e;
+            text-decoration: none;
+        }
+        .logo i {
+            color: #1f5a8a;
+            font-size: 28px;
+        }
+
+        .nav-links {
+            display: flex;
+            gap: 20px;
+            font-weight: 500;
+            font-size: 15px;
+        }
+        .nav-links a {
+            color: #1f3a57;
+            text-decoration: none;
+        }
+        .nav-links a:hover {
+            color: #0b1e2e;
+        }
+        .nav-links a.active {
+            color: #0b1e2e;
+            border-bottom: 2px solid #1f5a8a;
+            padding-bottom: 4px;
+        }
+
+        .nav-right {
+            display: flex;
+            align-items: center;
+            gap: 16px;
+            flex-wrap: wrap;
+        }
+
+        .search-box {
+            background: #e8f0fa;
+            border: 1px solid #b0c8dd;
+            border-radius: 40px;
+            padding: 6px 16px 6px 18px;
+            display: flex;
+            align-items: center;
+            gap: 8px;
+        }
+        .search-box input {
+            background: transparent;
+            border: none;
+            color: #1a2c3f;
+            font-size: 14px;
+            padding: 6px 0;
+            width: 180px;
+            outline: none;
+        }
+        .search-box input::placeholder {
+            color: #4a6a8a;
+        }
+        .search-box i {
+            color: #2a4a6a;
+        }
+
+        .upload-btn {
+            background: #1f5a8a;
+            color: white;
+            border: none;
+            border-radius: 40px;
+            padding: 8px 20px;
+            font-weight: 600;
+            font-size: 14px;
+            display: flex;
+            align-items: center;
+            gap: 6px;
+            cursor: pointer;
+            transition: 0.15s;
+        }
+        .upload-btn:hover {
+            background: #164a73;
+        }
+
+        #fileInput {
+            display: none;
+        }
+
+        .server-status {
+            display: inline-flex;
+            align-items: center;
+            gap: 6px;
+            font-size: 12px;
+            padding: 4px 12px;
+            border-radius: 20px;
+            background: #e8f0fa;
+            border: 1px solid #b0c8dd;
+        }
+        .status-dot {
+            width: 8px;
+            height: 8px;
+            border-radius: 50%;
+            display: inline-block;
+        }
+        .status-dot.online { background: #28a745; }
+        .status-dot.offline { background: #dc3545; }
+        .status-dot.checking { background: #ffc107; }
+
+        .channel-tabs {
+            display: flex;
+            gap: 12px;
+            padding: 18px 0 14px;
+            flex-wrap: wrap;
+            border-bottom: 1px solid #b8cee5;
+        }
+        .channel-tab {
+            background: #e8f0fa;
+            padding: 8px 20px;
+            border-radius: 30px;
+            font-size: 14px;
+            font-weight: 500;
+            color: #1a324a;
+            border: 2px solid transparent;
+            cursor: pointer;
+            display: flex;
+            align-items: center;
+            gap: 8px;
+            transition: 0.15s;
+        }
+        .channel-tab:hover {
+            background: #d4e6f5;
+            border-color: #b0c8dd;
+        }
+        .channel-tab.active {
+            background: #1f5a8a;
+            border-color: #1f5a8a;
+            color: white;
+        }
+        .channel-dot {
+            width: 10px;
+            height: 10px;
+            border-radius: 50%;
+            display: inline-block;
+        }
+        .file-count {
+            background: rgba(0,0,0,0.1);
+            padding: 0 8px;
+            border-radius: 12px;
+            font-size: 12px;
+            font-weight: 600;
+        }
+        .channel-tab.active .file-count {
+            background: rgba(255,255,255,0.2);
+        }
+
+        .content-row {
+            display: flex;
+            gap: 30px;
+            margin-top: 30px;
+        }
+
+        .main-feed {
+            flex: 2;
+        }
+
+        .video-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fill, minmax(260px, 1fr));
+            gap: 28px 20px;
+            margin-top: 0;
+        }
+
+        .results-branding {
+            display: flex;
+            justify-content: center;
+            padding: 36px 0 12px;
+        }
+
+        .results-branding img {
+            height: 64px;
+            width: auto;
+            opacity: 0.92;
+        }
+
+        .video-card {
+            background: #f2f8ff;
+            border-radius: 10px;
+            overflow: hidden;
+            border: 1px solid #b8cee5;
+            box-shadow: 0 2px 6px rgba(0, 20, 40, 0.06);
+            transition: 0.15s;
+            cursor: pointer;
+        }
+        .video-card:hover {
+            border-color: #7fa3c7;
+            background: #eaf3fd;
+            transform: translateY(-2px);
+            box-shadow: 0 4px 12px rgba(0, 20, 40, 0.12);
+        }
+
+        .thumbnail-wrapper {
+            position: relative;
+            width: 100%;
+            aspect-ratio: 16 / 9;
+            background: #bdd6ed;
+            overflow: hidden;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+        }
+        .thumbnail-wrapper img {
+            width: 100%;
+            height: 100%;
+            object-fit: cover;
+            display: block;
+        }
+        .duration-badge {
+            position: absolute;
+            bottom: 8px;
+            right: 10px;
+            background: rgba(0, 0, 0, 0.85);
+            padding: 3px 10px;
+            border-radius: 12px;
+            font-size: 12px;
+            font-weight: 600;
+            color: #ffffff;
+            backdrop-filter: blur(4px);
+            border: 1px solid rgba(255,255,255,0.1);
+        }
+        .duration-badge i {
+            margin-right: 4px;
+        }
+        .play-icon-overlay {
+            position: absolute;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            background: rgba(0, 0, 0, 0.3);
+            opacity: 0;
+            transition: opacity 0.3s;
+        }
+        .video-card:hover .play-icon-overlay {
+            opacity: 1;
+        }
+        .play-icon-overlay i {
+            font-size: 64px;
+            color: rgba(255, 255, 255, 0.9);
+            text-shadow: 0 2px 12px rgba(0,0,0,0.5);
+        }
+        .no-thumbnail {
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            justify-content: center;
+            color: #1f4a73;
+            font-size: 32px;
+            gap: 8px;
+        }
+        .no-thumbnail span {
+            font-size: 12px;
+            color: #4a6a8a;
+        }
+
+        .card-body {
+            padding: 14px 14px 16px;
+        }
+
+        .card-title {
+            font-weight: 600;
+            font-size: 16px;
+            color: #0b1e2e;
+            margin-bottom: 6px;
+            display: -webkit-box;
+            -webkit-line-clamp: 2;
+            -webkit-box-orient: vertical;
+            overflow: hidden;
+            line-height: 1.4;
+        }
+
+        .channel-name {
+            font-size: 14px;
+            color: #2a4a6a;
+            margin-bottom: 6px;
+            display: flex;
+            align-items: center;
+            gap: 6px;
+        }
+        .channel-badge {
+            font-size: 11px;
+            padding: 1px 10px;
+            border-radius: 30px;
+            color: white;
+            font-weight: 500;
+        }
+
+        .meta-row {
+            display: flex;
+            justify-content: space-between;
+            font-size: 13px;
+            color: #3a5a7a;
+            border-top: 1px solid #c4d9ed;
+            padding-top: 10px;
+            margin-top: 4px;
+        }
+        .meta-row i {
+            margin-right: 4px;
+        }
+
+        .rating-row {
+            display: flex;
+            align-items: center;
+            gap: 6px;
+            margin-top: 10px;
+            padding-top: 10px;
+            border-top: 1px solid #c4d9ed;
+        }
+        .rate-btn, .share-btn {
+            display: flex;
+            align-items: center;
+            gap: 5px;
+            font-size: 12px;
+            font-weight: 600;
+            padding: 5px 10px;
+            border-radius: 20px;
+            border: 1px solid #b8cee5;
+            background: #e6f0fa;
+            color: #2a4a6a;
+            cursor: pointer;
+            transition: 0.15s;
+        }
+        .rate-btn:hover {
+            background: #d5e6f7;
+            border-color: #7fa3c7;
+        }
+        .rate-btn.like-btn.active {
+            background: #d3f3dc;
+            border-color: #28a745;
+            color: #1c7a33;
+        }
+        .rate-btn.dislike-btn.active {
+            background: #fbdbe0;
+            border-color: #dc3545;
+            color: #a8202f;
+        }
+        .share-btn {
+            margin-left: auto;
+        }
+        .share-btn:hover {
+            background: #d5e6f7;
+            border-color: #7fa3c7;
+        }
+        .delete-btn {
+            background: #fbdbe0;
+            border-color: #e6a5ae;
+            color: #a8202f;
+        }
+        .delete-btn:hover {
+            background: #f6c2cb;
+            border-color: #dc3545;
+            color: #7a1622;
+        }
+        .video-card.removing {
+            opacity: 0;
+            transform: scale(0.96);
+            transition: opacity 0.2s ease, transform 0.2s ease;
+        }
+
+        .sidebar {
+            flex: 0.8;
+            background: #e6f0fa;
+            border-radius: 12px;
+            padding: 20px 16px;
+            border: 1px solid #b8cee5;
+            height: fit-content;
+        }
+        .sidebar h4 {
+            font-size: 16px;
+            font-weight: 600;
+            color: #0b1e2e;
+            margin-bottom: 16px;
+            border-bottom: 1px solid #b8cee5;
+            padding-bottom: 10px;
+        }
+
+        .channel-filter {
+            margin-bottom: 12px;
+        }
+        .channel-filter select {
+            width: 100%;
+            padding: 6px 12px;
+            border: 1px solid #b0c8dd;
+            border-radius: 20px;
+            background: #e8f0fa;
+            font-size: 13px;
+            outline: none;
+            color: #1a2c3f;
+        }
+
+        .folder-search {
+            display: flex;
+            gap: 8px;
+            margin-bottom: 12px;
+            align-items: center;
+        }
+        .folder-search input {
+            flex: 1;
+            padding: 6px 12px;
+            border: 1px solid #b0c8dd;
+            border-radius: 20px;
+            background: #e8f0fa;
+            font-size: 13px;
+            outline: none;
+            color: #1a2c3f;
+        }
+        .folder-search input:focus {
+            border-color: #1f5a8a;
+        }
+        .folder-search .search-btn {
+            background: #1f5a8a;
+            color: white;
+            border: none;
+            border-radius: 20px;
+            padding: 6px 14px;
+            cursor: pointer;
+            font-size: 13px;
+        }
+        .folder-search .search-btn:hover {
+            background: #164a73;
+        }
+        .folder-search .clear-btn {
+            background: #6c757d;
+            color: white;
+            border: none;
+            border-radius: 20px;
+            padding: 6px 10px;
+            cursor: pointer;
+            font-size: 13px;
+            display: none;
+        }
+        .folder-search .clear-btn.show {
+            display: inline-block;
+        }
+
+        .folder-file-item {
+            border-bottom: 1px solid #c4d9ed;
+        }
+        .folder-file-item.removing {
+            opacity: 0;
+            transform: translateX(6px);
+            transition: opacity 0.2s ease, transform 0.2s ease;
+        }
+        .folder-file {
+            display: flex;
+            align-items: center;
+            gap: 10px;
+            padding: 6px 0;
+            font-size: 13px;
+            color: #1a3a5a;
+            cursor: pointer;
+            border-radius: 6px;
+            transition: background 0.15s;
+        }
+        .folder-file:hover {
+            background: #e8f0fa;
+        }
+        .folder-file i {
+            width: 20px;
+            text-align: center;
+        }
+        .folder-file .file-size {
+            margin-left: auto;
+            color: #4a6a8a;
+            font-size: 12px;
+        }
+        .folder-file-delete-btn {
+            background: none;
+            border: none;
+            color: #a8202f;
+            padding: 3px 6px;
+            border-radius: 6px;
+            cursor: pointer;
+            font-size: 12px;
+            flex-shrink: 0;
+        }
+        .folder-file-delete-btn:hover {
+            background: #fbdbe0;
+        }
+        .folder-file-caret {
+            width: 12px !important;
+            font-size: 11px;
+            color: #4a6a8a;
+            transition: transform 0.15s;
+        }
+        .folder-file-caret.rotated {
+            transform: rotate(90deg);
+        }
+        .folder-file-detail {
+            display: none;
+            gap: 12px;
+            padding: 10px 6px 14px 22px;
+            align-items: flex-start;
+        }
+        .folder-file-detail.show {
+            display: flex;
+        }
+        .folder-file-thumb {
+            flex-shrink: 0;
+            width: 96px;
+            height: 60px;
+            border-radius: 6px;
+            overflow: hidden;
+            background: #0b1e2e;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+        }
+        .folder-file-thumb img {
+            width: 100%;
+            height: 100%;
+            object-fit: cover;
+        }
+        .folder-file-no-thumb {
+            color: #4a6a8a;
+            font-size: 20px;
+        }
+        .folder-file-detail-body {
+            flex: 1;
+            min-width: 0;
+        }
+        .folder-file-desc {
+            font-size: 12.5px;
+            color: #2a4a6a;
+            line-height: 1.5;
+            margin-bottom: 8px;
+            white-space: pre-wrap;
+            word-break: break-word;
+        }
+        .folder-file-desc-empty {
+            color: #7a92a8;
+            font-style: italic;
+        }
+        .folder-file-play-btn {
+            background: #1f5a8a;
+            color: white;
+            border: none;
+            border-radius: 20px;
+            padding: 5px 14px;
+            font-size: 12px;
+            font-weight: 600;
+            cursor: pointer;
+            display: inline-flex;
+            align-items: center;
+            gap: 6px;
+        }
+        .folder-file-play-btn:hover {
+            background: #164a73;
+        }
+        .file-channel {
+            font-size: 11px;
+            padding: 1px 8px;
+            border-radius: 30px;
+            color: white;
+            font-weight: 500;
+            margin-left: 6px;
+        }
+        .empty-folder {
+            color: #4a6a8a;
+            font-style: italic;
+            font-size: 13px;
+            padding: 8px 0;
+        }
+        .folder-error {
+            color: #dc3545;
+            font-size: 13px;
+            background: #f8d7da;
+            border-radius: 6px;
+            padding: 10px;
+            margin: 8px 0;
+        }
+
+        .footer {
+            margin-top: 50px;
+            border-top: 1px solid #b8cee5;
+            padding: 28px 0 10px;
+            font-size: 14px;
+            color: #1f3a57;
+            display: flex;
+            justify-content: space-between;
+            flex-wrap: wrap;
+            gap: 12px;
+        }
+        .footer a {
+            color: #1f3a57;
+            text-decoration: none;
+            margin-right: 18px;
+        }
+        .footer a:hover {
+            color: #0b1e2e;
+        }
+
+        .upload-toast {
+            position: fixed;
+            bottom: 30px;
+            left: 50%;
+            transform: translateX(-50%);
+            background: #0b1e2e;
+            color: #eaf3fd;
+            padding: 14px 28px;
+            border-radius: 60px;
+            font-weight: 500;
+            box-shadow: 0 8px 28px rgba(0,0,0,0.25);
+            display: flex;
+            align-items: center;
+            gap: 16px;
+            z-index: 999;
+            opacity: 0;
+            transition: opacity 0.25s ease;
+            pointer-events: none;
+            border: 1px solid #2a5a82;
+            max-width: 90%;
+        }
+        .upload-toast.show {
+            opacity: 1;
+            pointer-events: auto;
+        }
+        .upload-toast .close-toast {
+            background: none;
+            border: none;
+            color: #b0c8dd;
+            font-size: 20px;
+            cursor: pointer;
+            margin-left: 6px;
+            padding: 0 4px;
+        }
+
+        .upload-modal {
+            display: none;
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            background: rgba(0,0,0,0.6);
+            z-index: 1000;
+            justify-content: center;
+            align-items: center;
+        }
+        .upload-modal.show {
+            display: flex;
+        }
+        .upload-modal-content {
+            background: #e6f0fa;
+            border-radius: 16px;
+            padding: 30px;
+            max-width: 600px;
+            width: 90%;
+            max-height: 90vh;
+            overflow-y: auto;
+            border: 1px solid #b0c8dd;
+            box-shadow: 0 8px 32px rgba(0,0,0,0.3);
+        }
+        .upload-modal-content h3 {
+            margin-bottom: 16px;
+            color: #0b1e2e;
+        }
+        .upload-modal-content .subtitle {
+            color: #4a6a8a;
+            margin-bottom: 12px;
+            font-size: 14px;
+        }
+        .file-count-badge {
+            background: #1f5a8a;
+            color: white;
+            padding: 2px 12px;
+            border-radius: 20px;
+            font-size: 13px;
+            font-weight: 500;
+            display: inline-block;
+        }
+
+        .file-list-preview {
+            max-height: 120px;
+            overflow-y: auto;
+            margin: 8px 0 16px 0;
+            background: #f2f8ff;
+            border-radius: 8px;
+            padding: 8px 12px;
+            border: 1px solid #c4d9ed;
+        }
+        .file-list-preview .file-preview-item {
+            font-size: 13px;
+            padding: 8px 0;
+            color: #1a3a5a;
+            border-bottom: 1px solid #c4d9ed;
+        }
+        .file-list-preview .file-preview-item:last-child {
+            border-bottom: none;
+        }
+        .file-list-preview .file-preview-header {
+            display: flex;
+            justify-content: space-between;
+            gap: 8px;
+            margin-bottom: 4px;
+        }
+        .file-list-preview .file-preview-item .file-size-small {
+            color: #4a6a8a;
+            font-size: 12px;
+            white-space: nowrap;
+        }
+        .file-description-input {
+            width: 100%;
+            resize: vertical;
+            min-height: 36px;
+            max-height: 90px;
+            font-size: 12px;
+            font-family: inherit;
+            padding: 6px 8px;
+            border-radius: 6px;
+            border: 1px solid #c4d9ed;
+            background: #ffffff;
+            color: #1a3a5a;
+            outline: none;
+        }
+        .file-description-input:focus {
+            border-color: #1f5a8a;
+        }
+
+        .channel-option {
+            display: flex;
+            align-items: center;
+            gap: 12px;
+            padding: 12px 16px;
+            margin-bottom: 8px;
+            border-radius: 10px;
+            border: 2px solid transparent;
+            cursor: pointer;
+            background: #f2f8ff;
+            transition: 0.15s;
+        }
+        .channel-option:hover {
+            border-color: #b0c8dd;
+            background: #e8f0fa;
+        }
+        .channel-option.selected {
+            border-color: #1f5a8a;
+            background: #d4e6f5;
+        }
+        .channel-option i {
+            font-size: 24px;
+            width: 40px;
+            text-align: center;
+        }
+        .channel-option .info {
+            flex: 1;
+        }
+        .channel-option .info .name {
+            font-weight: 600;
+            color: #0b1e2e;
+        }
+        .channel-option .info .desc {
+            font-size: 13px;
+            color: #4a6a8a;
+        }
+
+        .upload-progress-container {
+            margin-top: 12px;
+            max-height: 200px;
+            overflow-y: auto;
+            border-top: 1px solid #c4d9ed;
+            padding-top: 12px;
+        }
+        .upload-progress-item {
+            display: flex;
+            align-items: center;
+            gap: 10px;
+            padding: 6px 8px;
+            border-radius: 6px;
+            background: #f2f8ff;
+            margin-bottom: 4px;
+            font-size: 13px;
+        }
+        .upload-progress-item .status-icon {
+            width: 24px;
+            text-align: center;
+        }
+        .upload-progress-item .file-name {
+            flex: 1;
+            overflow: hidden;
+            text-overflow: ellipsis;
+            white-space: nowrap;
+        }
+        .upload-progress-item .file-status {
+            font-weight: 500;
+            font-size: 12px;
+        }
+        .upload-progress-item .file-status.success {
+            color: #28a745;
+        }
+        .upload-progress-item .file-status.error {
+            color: #dc3545;
+        }
+        .upload-progress-item .file-status.uploading {
+            color: #ffc107;
+        }
+
+        .file-upload-info {
+            font-size: 13px;
+            color: #4a6a8a;
+            margin: 12px 0 16px 0;
+            padding: 10px;
+            background: #f2f8ff;
+            border-radius: 8px;
+            border: 1px solid #c4d9ed;
+        }
+        .file-upload-info strong {
+            color: #0b1e2e;
+        }
+        .file-upload-info i {
+            margin-right: 6px;
+        }
+
+        .modal-actions {
+            display: flex;
+            gap: 12px;
+            justify-content: flex-end;
+        }
+        .modal-actions button {
+            padding: 8px 24px;
+            border: none;
+            border-radius: 30px;
+            font-weight: 600;
+            cursor: pointer;
+            transition: 0.15s;
+        }
+        .modal-actions .cancel-btn {
+            background: #6c757d;
+            color: white;
+        }
+        .modal-actions .cancel-btn:hover {
+            background: #5a6268;
+        }
+        .modal-actions .upload-confirm-btn {
+            background: #1f5a8a;
+            color: white;
+        }
+        .modal-actions .upload-confirm-btn:hover {
+            background: #164a73;
+        }
+        .modal-actions .upload-confirm-btn:disabled {
+            opacity: 0.6;
+            cursor: not-allowed;
+        }
+
+        /* Quiz feature */
+        .quiz-action-row {
+            width: 100%;
+            max-width: 900px;
+            display: flex;
+            justify-content: center;
+            margin-top: 4px;
+        }
+        .quiz-open-btn {
+            background: #1f5a8a;
+            color: white;
+            border: none;
+            border-radius: 24px;
+            padding: 9px 24px;
+            font-weight: 600;
+            font-size: 14px;
+            cursor: pointer;
+            display: inline-flex;
+            align-items: center;
+            gap: 8px;
+        }
+        .quiz-open-btn:hover {
+            background: #164a73;
+        }
+
+        .quiz-modal {
+            display: none;
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            background: rgba(0,0,0,0.6);
+            z-index: 1100;
+            justify-content: center;
+            align-items: center;
+        }
+        .quiz-modal.show {
+            display: flex;
+        }
+        .quiz-modal-content {
+            background: #e6f0fa;
+            border-radius: 16px;
+            padding: 28px;
+            max-width: 640px;
+            width: 92%;
+            max-height: 88vh;
+            overflow-y: auto;
+            border: 1px solid #b0c8dd;
+            box-shadow: 0 8px 32px rgba(0,0,0,0.3);
+        }
+        .quiz-modal-content h3 {
+            margin-bottom: 14px;
+            color: #0b1e2e;
+        }
+        .quiz-tabs {
+            display: flex;
+            gap: 6px;
+            margin-bottom: 18px;
+            border-bottom: 1px solid #c4d9ed;
+        }
+        .quiz-tab-btn {
+            background: none;
+            border: none;
+            padding: 8px 16px;
+            font-weight: 600;
+            font-size: 13.5px;
+            color: #4a6a8a;
+            cursor: pointer;
+            border-bottom: 3px solid transparent;
+        }
+        .quiz-tab-btn.active {
+            color: #1f5a8a;
+            border-bottom-color: #1f5a8a;
+        }
+
+        .quiz-student-name-input {
+            width: 100%;
+            padding: 9px 12px;
+            border-radius: 8px;
+            border: 1px solid #c4d9ed;
+            margin-bottom: 18px;
+            font-size: 14px;
+            font-family: inherit;
+            background: #fff;
+            color: #1a3a5a;
+        }
+        .quiz-take-question {
+            margin-bottom: 18px;
+        }
+        .quiz-take-question .q-text {
+            font-weight: 600;
+            color: #0b1e2e;
+            margin-bottom: 8px;
+            font-size: 14px;
+        }
+        .quiz-take-option {
+            display: flex;
+            align-items: center;
+            gap: 9px;
+            padding: 8px 12px;
+            border-radius: 8px;
+            border: 1px solid #c4d9ed;
+            margin-bottom: 6px;
+            cursor: pointer;
+            background: #f2f8ff;
+            font-size: 13.5px;
+            color: #1a3a5a;
+        }
+        .quiz-take-option:hover {
+            background: #e8f0fa;
+        }
+        .quiz-take-option input {
+            margin: 0;
+        }
+
+        .quiz-question-card {
+            background: #f2f8ff;
+            border: 1px solid #c4d9ed;
+            border-radius: 10px;
+            padding: 14px 16px;
+            margin-bottom: 14px;
+            position: relative;
+        }
+        .quiz-question-card .remove-question-btn {
+            position: absolute;
+            top: 12px;
+            right: 12px;
+            color: #dc3545;
+            cursor: pointer;
+            font-size: 15px;
+        }
+        .quiz-question-card label {
+            font-size: 12px;
+            font-weight: 600;
+            color: #0b1e2e;
+            display: block;
+            margin: 10px 0 4px;
+        }
+        .quiz-question-card input[type="text"],
+        .quiz-question-card textarea,
+        .quiz-question-card select {
+            width: 100%;
+            padding: 7px 10px;
+            border-radius: 6px;
+            border: 1px solid #c4d9ed;
+            font-size: 13px;
+            font-family: inherit;
+            background: #ffffff;
+            color: #1a3a5a;
+            resize: vertical;
+        }
+        .quiz-option-row {
+            display: flex;
+            align-items: center;
+            gap: 8px;
+            margin-bottom: 6px;
+        }
+        .quiz-option-row input[type="radio"] {
+            flex-shrink: 0;
+        }
+        .quiz-option-row input[type="text"] {
+            flex: 1;
+        }
+        .add-question-btn, .add-option-btn {
+            background: #28a745;
+            color: white;
+            border: none;
+            border-radius: 20px;
+            padding: 8px 18px;
+            font-weight: 600;
+            font-size: 13px;
+            cursor: pointer;
+            margin-bottom: 10px;
+        }
+        .add-question-btn:hover, .add-option-btn:hover {
+            background: #218838;
+        }
+        .add-option-btn {
+            padding: 4px 12px;
+            font-size: 12px;
+            margin-top: 4px;
+        }
+        .add-option-btn:disabled {
+            opacity: 0.5;
+            cursor: not-allowed;
+        }
+
+        .quiz-result-summary {
+            text-align: center;
+            padding: 16px 10px 22px;
+        }
+        .quiz-result-score {
+            font-size: 38px;
+            font-weight: 800;
+            color: #1f5a8a;
+        }
+        .quiz-result-percentage {
+            font-size: 14px;
+            color: #4a6a8a;
+            margin-bottom: 16px;
+        }
+        .quiz-result-breakdown-item {
+            text-align: left;
+            padding: 10px 14px;
+            border-radius: 8px;
+            margin-bottom: 8px;
+            font-size: 13px;
+            line-height: 1.5;
+        }
+        .quiz-result-breakdown-item.correct {
+            background: #e6f7ea;
+            border: 1px solid #b7e3c2;
+            color: #185c33;
+        }
+        .quiz-result-breakdown-item.incorrect {
+            background: #fdeaea;
+            border: 1px solid #f0bcbc;
+            color: #8a1f1f;
+        }
+        .download-pdf-btn {
+            background: #c8102e;
+            color: white;
+            border: none;
+            border-radius: 22px;
+            padding: 10px 26px;
+            font-weight: 700;
+            font-size: 14px;
+            cursor: pointer;
+            display: inline-flex;
+            align-items: center;
+            gap: 8px;
+        }
+        .download-pdf-btn:hover {
+            background: #a50d26;
+        }
+
+        /* Video Player Modal */
+        .video-player-modal {
+            display: none;
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            background: rgba(0, 0, 0, 0.95);
+            z-index: 2000;
+            justify-content: center;
+            align-items: center;
+            padding: 20px;
+        }
+        .video-player-modal.show {
+            display: flex;
+            flex-direction: column;
+            gap: 12px;
+        }
+        .video-player-content {
+            position: relative;
+            width: 100%;
+            max-width: 900px;
+            background: #000;
+            border-radius: 12px;
+            overflow: hidden;
+        }
+        .video-description-panel {
+            width: 100%;
+            max-width: 900px;
+            background: #142c42;
+            color: #d8e6f5;
+            font-size: 14px;
+            line-height: 1.6;
+            padding: 14px 20px;
+            border-radius: 12px;
+            border: 1px solid #2a5a82;
+            max-height: 20vh;
+            overflow-y: auto;
+            white-space: pre-wrap;
+        }
+        .card-description {
+            font-size: 12.5px;
+            color: #3a5a7a;
+            margin: 2px 0 8px;
+            line-height: 1.45;
+            max-height: 8.7em;
+            overflow-y: auto;
+            word-break: break-word;
+        }
+        .folder-file-desc-link {
+            display: block;
+            font-size: 12.5px;
+            color: #1f5a8a;
+            line-height: 1.5;
+            margin-bottom: 8px;
+            white-space: pre-wrap;
+            word-break: break-word;
+            text-decoration: underline;
+            text-decoration-color: rgba(31,90,138,0.4);
+            cursor: pointer;
+        }
+        .folder-file-desc-link:hover {
+            color: #0b1e2e;
+            text-decoration-color: #0b1e2e;
+        }
+        .folder-file-desc-link .search-highlight {
+            text-decoration: none;
+        }
+        .video-player-content video {
+            width: 100%;
+            max-height: 80vh;
+            display: block;
+            background: #000;
+        }
+        .video-player-content .close-player {
+            position: absolute;
+            top: 10px;
+            right: 15px;
+            background: rgba(0,0,0,0.7);
+            color: white;
+            border: none;
+            font-size: 28px;
+            cursor: pointer;
+            z-index: 10;
+            width: 40px;
+            height: 40px;
+            border-radius: 50%;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            transition: 0.15s;
+        }
+        .video-player-content .close-player:hover {
+            background: rgba(255,0,0,0.7);
+            transform: scale(1.1);
+        }
+        .video-player-content .video-title {
+            position: absolute;
+            bottom: 60px;
+            left: 20px;
+            color: white;
+            font-size: 16px;
+            font-weight: 600;
+            text-shadow: 0 2px 8px rgba(0,0,0,0.8);
+            background: rgba(0,0,0,0.5);
+            padding: 8px 16px;
+            border-radius: 8px;
+            backdrop-filter: blur(4px);
+        }
+        .video-player-content .channel-label {
+            position: absolute;
+            bottom: 20px;
+            left: 20px;
+            color: rgba(255,255,255,0.8);
+            font-size: 13px;
+            text-shadow: 0 2px 8px rgba(0,0,0,0.8);
+            background: rgba(0,0,0,0.5);
+            padding: 4px 12px;
+            border-radius: 20px;
+            backdrop-filter: blur(4px);
+        }
+
+        .search-highlight {
+            background: #ffd700;
+            color: #0b1e2e;
+            padding: 0 2px;
+            border-radius: 2px;
+        }
+
+        @media (max-width: 780px) {
+            .nav-links { display: none; }
+            .search-box input { width: 120px; }
+            .content-row { flex-direction: column; }
+            .sidebar { width: 100%; }
+            .video-player-content video { max-height: 60vh; }
+            .video-player-content .video-title { font-size: 14px; bottom: 50px; }
+            .upload-modal-content { max-width: 95%; padding: 20px; }
+        }
+        @media (max-width: 520px) {
+            .navbar { flex-direction: column; align-items: stretch; }
+            .nav-left { justify-content: space-between; }
+            .search-box input { width: 100px; }
+            .upload-btn span { display: none; }
+            .channel-tab { padding: 6px 12px; font-size: 12px; }
+        }
+    </style>
+</head>
+<body>
+    <!-- AUTH SCREEN: registration/login is required before using the app -->
+    <div id="authScreen" class="auth-screen">
+        <div class="auth-card">
+            <img class="auth-logo" id="authBrandLogo" alt="Merge Nursing Review">
+            <h2 id="authTitle">Log in to MergeMedia</h2>
+            <p class="auth-subtitle" id="authSubtitle">Please log in to continue.</p>
+            <form id="authForm" autocomplete="off">
+                <div class="auth-field">
+                    <label for="authUsername">Username</label>
+                    <input type="text" id="authUsername" placeholder="e.g. jdelacruz" required minlength="3" maxlength="32">
+                </div>
+                <div class="auth-field" id="authDisplayNameRow" style="display:none;">
+                    <label for="authDisplayName">Display name</label>
+                    <input type="text" id="authDisplayName" placeholder="e.g. Juan Dela Cruz" maxlength="80">
+                </div>
+                <div class="auth-field">
+                    <label for="authPassword">Password</label>
+                    <input type="password" id="authPassword" placeholder="At least 6 characters" required minlength="6">
+                </div>
+                <div class="auth-error" id="authError"></div>
+                <button type="submit" class="auth-submit-btn" id="authSubmitBtn">Log In</button>
+            </form>
+            <button type="button" class="auth-toggle-btn" id="authToggleBtn">Don't have an account? Register</button>
+        </div>
+    </div>
+
+    <div id="appRoot" style="display:none;">
+    <!-- TRIAL STATUS BANNER -->
+    <div id="trialBanner" style="display: none; background: #1f5a8a; color: white; padding: 10px 20px; text-align: center; font-size: 14px; border-radius: 0 0 8px 8px; margin: 0 -20px 10px -20px; box-shadow: 0 2px 8px rgba(0,0,0,0.1);">
+        <i class="fas fa-clock"></i> Trial: <span id="trialHours">300</span> hours remaining
+        <span style="background: #dc3545; padding: 2px 10px; border-radius: 20px; margin-left: 10px; font-weight: 600;">⚠️</span>
+    </div>
+
+    <div class="app">
+        <!-- NAVBAR -->
+        <nav class="navbar">
+            <div class="nav-left">
+                <img id="navBrandLogo" alt="Merge Nursing Review" class="brand-logo">
+                <a href="#" class="logo"><i class="fas fa-play"></i> MergeMedia</a>
+                <div class="nav-links">
+                    <a href="#" class="active">Home</a>
+                    <a href="#">Trending</a>
+                    <a href="#">Channels</a>
+                    <a href="#">Library</a>
+                </div>
+            </div>
+            <div class="nav-right">
+                <div class="search-box">
+                    <button type="button" id="globalSearchBtn" style="background:none;border:none;padding:0;cursor:pointer;color:inherit;font:inherit;" title="Search">
+                        <i class="fas fa-search"></i>
+                    </button>
+                    <input type="text" placeholder="Search videos..." id="globalSearch">
+                </div>
+                <div class="user-menu">
+                    <i class="far fa-user-circle"></i>
+                    <span id="currentUserLabel">Guest</span>
+                    <button class="logout-btn" id="logoutBtn"><i class="fas fa-sign-out-alt"></i> Log out</button>
+                </div>
+                <button class="upload-btn" id="uploadBtn"><i class="fas fa-upload"></i> <span>Upload</span></button>
+                <input type="file" id="fileInput" accept="video/*" multiple>
+                <div class="server-status" id="serverStatus">
+                    <span class="status-dot checking" id="statusDot"></span>
+                    <span id="statusText">Checking...</span>
+                </div>
+            </div>
+        </nav>
+
+        <!-- CHANNEL TABS -->
+        <div class="channel-tabs" id="channelTabs">
+            <div class="channel-tab active" data-channel="all" onclick="switchChannel('all')">
+                <i class="fas fa-th"></i> All Channels <span class="file-count" id="allCount">0</span>
+            </div>
+        </div>
+
+        <!-- MAIN CONTENT -->
+        <div class="content-row">
+            <div class="main-feed">
+                <div class="video-grid" id="videoGrid">
+                    <div style="grid-column: 1/-1; text-align: center; padding: 40px; color: #4a6a8a;">
+                        <i class="fas fa-spinner fa-spin" style="font-size: 32px;"></i>
+                        <p>Loading videos...</p>
+                    </div>
+                </div>
+                <div class="results-branding">
+                    <img id="brandLogoSource" src="data:image/png;base64,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" alt="Merge Nursing Review">
+                </div>
+            </div>
+
+            <!-- SIDEBAR -->
+            <aside class="sidebar">
+                <h4><i class="fas fa-folder-open" style="color:#1f5a8a;"></i> MergeTV</h4>
+                
+                <div class="channel-filter">
+                    <select id="sidebarChannelFilter" onchange="applySidebarFilter()">
+                        <option value="">All Channels</option>
+                    </select>
+                </div>
+                
+                <div class="folder-search">
+                    <input type="text" id="folderSearch" placeholder="Search files...">
+                    <button class="search-btn" onclick="performFolderSearch()"><i class="fas fa-search"></i></button>
+                    <button class="clear-btn" id="clearSearchBtn" onclick="clearFolderSearch()"><i class="fas fa-times"></i></button>
+                </div>
+                <div id="searchHitsBanner" style="display:none; margin: 6px 0 2px; font-size: 13px; font-weight: 600; color: #1f5a8a;">
+                    <i class="fas fa-bullseye"></i> <span id="searchHitsText"></span>
+                </div>
+                
+                <div id="folderFileList">
+                    <div class="empty-folder"><i class="fas fa-inbox"></i> No videos uploaded yet</div>
+                </div>
+                <div style="margin-top: 8px; font-size: 12px; color: #3a5a7a; border-top: 1px solid #c4d9ed; padding-top: 8px;">
+                    <i class="fas fa-hdd"></i> Storage: <span id="storageUsed">0 MB</span> used
+                    <span id="searchResultCount" style="float: right; display: none;"></span>
+                </div>
+            </aside>
+        </div>
+
+        <!-- FOOTER -->
+        <div class="footer">
+            <div>
+                <a href="#"><i class="fas fa-play"></i> MergeMedia</a>
+                <a href="#">About</a>
+                <a href="#">Terms</a>
+                <a href="#">Privacy</a>
+                <a href="#">Help</a>
+                <a href="#">Brand</a>
+            </div>
+            <div style="color:#1f3a57;"><i class="fas fa-code"></i> localhost · 2026</div>
+        </div>
+
+        <div style="text-align: center; font-size: 12px; color: #2a6a8a; margin-top: 16px;">
+            ⚡ self-hosted · MergeMedia Teacher Channels · Registration required · Downloads are per-video, uploader-controlled
+        </div>
+
+        <!-- TOAST -->
+        <div id="uploadToast" class="upload-toast">
+            <i class="fas fa-cloud-upload-alt"></i>
+            <span id="toastMessage">File uploaded successfully!</span>
+            <button class="close-toast" id="closeToast">&times;</button>
+        </div>
+
+        <!-- UPLOAD MODAL -->
+        <div class="upload-modal" id="uploadModal">
+            <div class="upload-modal-content">
+                <h3><i class="fas fa-upload"></i> Choose Channel</h3>
+                <p class="subtitle">
+                    Select which teacher channel to upload to:
+                    <span class="file-count-badge" id="fileCountBadge">0 files</span>
+                </p>
+                
+                <div class="file-list-preview" id="fileListPreview">
+                    <div style="color: #4a6a8a; font-size: 13px; text-align: center; padding: 4px 0;">
+                        No files selected
+                    </div>
+                </div>
+                
+                <div id="channelOptions"></div>
+                
+                <div class="upload-progress-container" id="uploadProgressContainer" style="display: none;">
+                    <div id="uploadProgressList"></div>
+                </div>
+                
+                <div class="file-upload-info">
+                    <i class="fas fa-info-circle"></i> 
+                    <strong>Max 20</strong> files per upload. 
+                    Select multiple files (Ctrl+Click or Shift+Click)
+                </div>
+                
+                <div class="modal-actions">
+                    <button class="cancel-btn" onclick="closeUploadModal()">Cancel</button>
+                    <button class="upload-confirm-btn" id="uploadConfirmBtn" onclick="confirmUpload()">Upload All</button>
+                </div>
+            </div>
+        </div>
+
+        <!-- VIDEO PLAYER MODAL -->
+        <div class="video-player-modal" id="videoPlayerModal">
+            <div class="video-player-content">
+                <button class="close-player" onclick="closeVideoPlayer()">&times;</button>
+                <video id="videoPlayer" controls controlsList="nodownload noremoteplayback" disablePictureInPicture>
+                    <source id="videoSource" src="" type="video/mp4">
+                    Your browser does not support the video tag.
+                </video>
+                <div class="video-title" id="videoTitle">Video Title</div>
+                <div class="channel-label" id="videoChannel">Channel</div>
+            </div>
+            <div class="video-description-panel" id="videoDescription" style="display: none;"></div>
+            <div class="quiz-action-row" id="videoActionsRow" style="justify-content:flex-start; align-items:center;"></div>
+            <div class="quiz-action-row">
+                <button class="quiz-open-btn" onclick="openQuizModal()">
+                    <i class="fas fa-clipboard-list"></i> Quiz
+                </button>
+            </div>
+        </div>
+    </div>
+
+    <!-- QUIZ MODAL -->
+    <div class="quiz-modal" id="quizModal">
+        <div class="quiz-modal-content">
+            <h3 id="quizModalTitle"><i class="fas fa-clipboard-list"></i> Quiz</h3>
+            <div class="quiz-tabs">
+                <button class="quiz-tab-btn active" id="quizTabTake" onclick="switchQuizTab('take')">Take Quiz</button>
+                <button class="quiz-tab-btn" id="quizTabManage" onclick="switchQuizTab('manage')">Manage Questions</button>
+            </div>
+
+            <div id="quizTakeSection">
+                <div id="quizTakeBody"></div>
+                <div id="quizResultSection" style="display:none;">
+                    <div id="quizResultBody"></div>
+                </div>
+            </div>
+
+            <div id="quizManageSection" style="display:none;">
+                <div id="quizManageBody"></div>
+            </div>
+        </div>
+    </div>
+    </div> <!-- /#appRoot -->
+
+    <script>
+    const API_BASE = 'http://localhost:5000';
+    let channels = [];
+    let currentChannel = 'all';
+    let currentSearchQuery = '';
+    let selectedChannel = '';
+    let pendingFiles = null;
+    let pendingDescriptions = {};
+    let pendingDownloadable = {};
+    let isServerOnline = false;
+    let videoMetaMap = {}; // key: `${channel}::${name}` -> { title, channelName, description }
+    let currentUser = null; // { username, display_name } once logged in
+    const AUTH_TOKEN_KEY = 'mergemedia_auth_token';
+
+    function getAuthToken() {
+        return localStorage.getItem(AUTH_TOKEN_KEY) || '';
+    }
+    function setAuthToken(token) {
+        if (token) localStorage.setItem(AUTH_TOKEN_KEY, token);
+    }
+    function clearAuthToken() {
+        localStorage.removeItem(AUTH_TOKEN_KEY);
+    }
+
+    // Appends the auth token as a query param, for the few endpoints that
+    // are opened as plain links/new tabs (video src, downloads, PDF export)
+    // where a custom Authorization header can't be attached.
+    function withAuthParam(url) {
+        const token = getAuthToken();
+        if (!token) return url;
+        return url + (url.includes('?') ? '&' : '?') + 'token=' + encodeURIComponent(token);
+    }
+
+    // All API calls go through here so the auth token is always sent, and a
+    // 401 always drops the user back to the login screen. A bearer token
+    // (rather than a cookie) is used because this page is often opened as a
+    // local file or from a different port than the Flask server, and
+    // cross-origin cookies are unreliable in that setup.
+    async function apiFetch(url, options = {}) {
+        const token = getAuthToken();
+        const headers = { ...(options.headers || {}) };
+        if (token) headers['Authorization'] = `Bearer ${token}`;
+        const response = await fetch(url, { ...options, headers });
+        if (response.status === 401) {
+            clearAuthToken();
+            currentUser = null;
+            showAuthScreen();
+        }
+        return response;
+    }
+
+    // Reuse the single embedded logo image (base64) for all branding spots
+    // so the file stays fully self-contained (no external image request).
+    (function populateBrandLogos() {
+        const src = document.getElementById('brandLogoSource') ? document.getElementById('brandLogoSource').src : '';
+        ['navBrandLogo', 'authBrandLogo'].forEach(id => {
+            const el = document.getElementById(id);
+            if (el && src) el.src = src;
+        });
+    })();
+
+    function videoMetaKey(channel, name) {
+        return `${channel}::${name}`;
+    }
+
+    // DOM Elements
+    const uploadBtn = document.getElementById('uploadBtn');
+    const fileInput = document.getElementById('fileInput');
+    const toast = document.getElementById('uploadToast');
+    const toastMessage = document.getElementById('toastMessage');
+    const closeToastBtn = document.getElementById('closeToast');
+    const videoGrid = document.getElementById('videoGrid');
+    const folderFileList = document.getElementById('folderFileList');
+    const storageUsed = document.getElementById('storageUsed');
+    const statusDot = document.getElementById('statusDot');
+    const statusText = document.getElementById('statusText');
+    const folderSearch = document.getElementById('folderSearch');
+    const clearSearchBtn = document.getElementById('clearSearchBtn');
+    const searchResultCount = document.getElementById('searchResultCount');
+    const searchHitsBanner = document.getElementById('searchHitsBanner');
+    const searchHitsText = document.getElementById('searchHitsText');
+    const globalSearch = document.getElementById('globalSearch');
+    const sidebarChannelFilter = document.getElementById('sidebarChannelFilter');
+    const uploadModal = document.getElementById('uploadModal');
+    const channelOptions = document.getElementById('channelOptions');
+    const allCount = document.getElementById('allCount');
+    const fileCountBadge = document.getElementById('fileCountBadge');
+    const fileListPreview = document.getElementById('fileListPreview');
+    const uploadConfirmBtn = document.getElementById('uploadConfirmBtn');
+
+    // Video Player Elements
+    const videoPlayerModal = document.getElementById('videoPlayerModal');
+    const videoPlayer = document.getElementById('videoPlayer');
+    const videoSource = document.getElementById('videoSource');
+    const videoTitle = document.getElementById('videoTitle');
+    const videoChannel = document.getElementById('videoChannel');
+    const videoDescription = document.getElementById('videoDescription');
+
+    // Quiz DOM refs & state
+    const quizModal = document.getElementById('quizModal');
+    const quizModalTitle = document.getElementById('quizModalTitle');
+    const quizTabTake = document.getElementById('quizTabTake');
+    const quizTabManage = document.getElementById('quizTabManage');
+    const quizTakeSection = document.getElementById('quizTakeSection');
+    const quizManageSection = document.getElementById('quizManageSection');
+    const quizTakeBody = document.getElementById('quizTakeBody');
+    const quizManageBody = document.getElementById('quizManageBody');
+    const quizResultSection = document.getElementById('quizResultSection');
+    const quizResultBody = document.getElementById('quizResultBody');
+
+    let currentQuizChannel = '';
+    let currentQuizFilename = '';
+    let currentQuizVideoTitle = '';
+    let quizTakeQuestions = [];
+    let quizManageQuestions = [];
+    let quizAnswers = {};
+    let quizLastResult = null;
+
+    function formatSize(bytes) {
+        if (bytes === 0) return '0 MB';
+        const mb = bytes / (1024 * 1024);
+        return mb < 0.01 ? '< 0.01 MB' : mb.toFixed(2) + ' MB';
+    }
+
+    function escapeForAttr(str) {
+        return String(str).replace(/\\/g, '\\\\').replace(/'/g, "\\'");
+    }
+
+    function escapeHtml(str) {
+        const div = document.createElement('div');
+        div.textContent = str == null ? '' : str;
+        return div.innerHTML;
+    }
+
+    function truncateText(text, maxLen) {
+        if (!text) return '';
+        if (text.length <= maxLen) return text;
+        return text.slice(0, maxLen).trimEnd() + '…';
+    }
+
+    window.updatePendingDescription = function(index, filename, value) {
+        pendingDescriptions[filename] = value;
+    };
+
+    window.updatePendingDownloadable = function(filename, checked) {
+        pendingDownloadable[filename] = checked;
+    };
+
+    function showToast(msg, isError = false) {
+        toastMessage.textContent = msg;
+        toast.classList.add('show');
+        toast.style.borderColor = isError ? '#dc3545' : '#2a5a82';
+        clearTimeout(window.toastTimeout);
+        window.toastTimeout = setTimeout(() => toast.classList.remove('show'), 5000);
+    }
+
+    closeToastBtn.addEventListener('click', () => {
+        toast.classList.remove('show');
+        clearTimeout(window.toastTimeout);
+    });
+
+    function getChannelColor(channelId) {
+        const channel = channels.find(c => c.id === channelId);
+        return channel ? channel.color : '#6c757d';
+    }
+
+    function getChannelIcon(channelId) {
+        const channel = channels.find(c => c.id === channelId);
+        return channel ? channel.icon : 'fas fa-video';
+    }
+
+    function getChannelName(channelId) {
+        const channel = channels.find(c => c.id === channelId);
+        return channel ? channel.name : channelId;
+    }
+
+    function highlightText(text, query) {
+        const safeText = escapeHtml(text);
+        if (!query || !text) return safeText;
+        const regex = new RegExp('(' + query.replace(/[.*+?^${}()|[\]\\]/g, '\\$&') + ')', 'gi');
+        return safeText.replace(regex, '<span class="search-highlight">$1</span>');
+    }
+
+    // Rating & Share Functions
+    function updateRatingUI(channel, filename, data) {
+        const rows = document.querySelectorAll(`.rating-row[data-channel="${channel}"][data-filename="${filename}"]`);
+        rows.forEach(row => {
+            const likeBtn = row.querySelector('.like-btn');
+            const dislikeBtn = row.querySelector('.dislike-btn');
+            const likeCount = row.querySelector('.like-count');
+            const dislikeCount = row.querySelector('.dislike-count');
+            const shareCount = row.querySelector('.share-count');
+            if (likeCount && data.likes !== undefined) likeCount.textContent = data.likes;
+            if (dislikeCount && data.dislikes !== undefined) dislikeCount.textContent = data.dislikes;
+            if (shareCount && data.shares !== undefined) shareCount.textContent = data.shares;
+            if (likeBtn && data.user_vote !== undefined) likeBtn.classList.toggle('active', data.user_vote === 'like');
+            if (dislikeBtn && data.user_vote !== undefined) dislikeBtn.classList.toggle('active', data.user_vote === 'dislike');
+        });
+    }
+
+    window.rateVideo = async function(channel, filename, action, evt) {
+        if (evt) evt.stopPropagation();
+        if (!isServerOnline) {
+            showToast('❌ Server is offline', true);
+            return;
+        }
+        try {
+            const response = await apiFetch(`${API_BASE}/rate/${encodeURIComponent(channel)}/${encodeURIComponent(filename)}`, {
+                method: 'POST',
+                headers: { 'Content-Type': 'application/json' },
+                body: JSON.stringify({ action })
+            });
+            if (!response.ok) {
+                const errorData = await response.json().catch(() => ({}));
+                throw new Error(errorData.error || 'Failed to rate video');
+            }
+            const data = await response.json();
+            updateRatingUI(channel, filename, data);
+        } catch (error) {
+            console.error('Error rating video:', error);
+            showToast(`❌ ${error.message}`, true);
+        }
+    };
+
+    window.shareVideo = async function(channel, filename, evt) {
+        if (evt) evt.stopPropagation();
+        if (!isServerOnline) {
+            showToast('❌ Server is offline', true);
+            return;
+        }
+        try {
+            const response = await apiFetch(`${API_BASE}/share/${encodeURIComponent(channel)}/${encodeURIComponent(filename)}`, {
+                method: 'POST'
+            });
+            if (!response.ok) {
+                const errorData = await response.json().catch(() => ({}));
+                throw new Error(errorData.error || 'Failed to share video');
+            }
+            const data = await response.json();
+            updateRatingUI(channel, filename, data);
+
+            if (navigator.clipboard && navigator.clipboard.writeText) {
+                await navigator.clipboard.writeText(data.share_url);
+                showToast(`🔗 Link copied! Shared ${data.shares} time${data.shares !== 1 ? 's' : ''}`);
+            } else {
+                showToast(`🔗 Share link: ${data.share_url}`);
+            }
+        } catch (error) {
+            console.error('Error sharing video:', error);
+            showToast(`❌ ${error.message}`, true);
+        }
+    };
+
+    window.downloadVideo = function(channel, filename, evt) {
+        if (evt) evt.stopPropagation();
+        window.open(withAuthParam(`${API_BASE}/download/${encodeURIComponent(channel)}/${encodeURIComponent(filename)}`), '_blank');
+    };
+
+    window.toggleVideoDownloadable = async function(channel, filename) {
+        try {
+            const response = await apiFetch(`${API_BASE}/toggle-download/${encodeURIComponent(channel)}/${encodeURIComponent(filename)}`, {
+                method: 'POST'
+            });
+            const data = await response.json().catch(() => ({}));
+            if (!response.ok) throw new Error(data.error || 'Failed to update download setting');
+
+            const meta = videoMetaMap[videoMetaKey(channel, filename)];
+            if (meta) meta.downloadable = data.downloadable;
+            renderPlayerDownloadRow(channel, filename);
+            showToast(data.downloadable ? '✅ Downloads enabled for this video' : '🔒 Downloads disabled for this video');
+            await refreshVideos(currentChannel);
+            await refreshFolder(currentSearchQuery);
+        } catch (error) {
+            showToast(`❌ ${error.message}`, true);
+        }
+    };
+
+    window.deleteVideo = async function(channel, filename, evt) {
+        if (evt) evt.stopPropagation();
+
+        const meta = videoMetaMap[videoMetaKey(channel, filename)] || {};
+        const label = meta.title || filename;
+        if (!confirm(`Delete "${label}"? This removes the video, its quiz, and its ratings permanently. This cannot be undone.`)) {
+            return;
+        }
+
+        // Optimistically fade the card and folder row out right away.
+        const domKey = videoMetaKey(channel, filename).replace(/[^a-zA-Z0-9]/g, '_');
+        const cardId = `vcard_${domKey}`;
+        const folderItemId = `fitem_${domKey}`;
+        const cardEl = document.getElementById(cardId);
+        const folderItemEl = document.getElementById(folderItemId);
+        if (cardEl) cardEl.classList.add('removing');
+        if (folderItemEl) folderItemEl.classList.add('removing');
+
+        try {
+            const response = await apiFetch(`${API_BASE}/delete/${encodeURIComponent(channel)}/${encodeURIComponent(filename)}`, {
+                method: 'DELETE'
+            });
+            const data = await response.json().catch(() => ({}));
+            if (!response.ok) throw new Error(data.error || 'Failed to delete video');
+
+            // Close the player if this was the video currently open.
+            if (videoPlayerModal.classList.contains('show') &&
+                currentQuizChannel === channel && currentQuizFilename === filename) {
+                closeVideoPlayer();
+            }
+
+            delete videoMetaMap[videoMetaKey(channel, filename)];
+            if (cardEl) cardEl.remove();
+            if (folderItemEl) folderItemEl.remove();
+
+            showToast(`🗑️ "${label}" deleted`);
+
+            await refreshVideos(currentChannel);
+            await refreshFolder(currentSearchQuery);
+        } catch (error) {
+            if (cardEl) cardEl.classList.remove('removing');
+            if (folderItemEl) folderItemEl.classList.remove('removing');
+            showToast(`❌ ${error.message}`, true);
+        }
+    };
+
+    function renderPlayerDownloadRow(channelId, filename) {
+        const row = document.getElementById('videoActionsRow');
+        if (!row) return;
+        const meta = videoMetaMap[videoMetaKey(channelId, filename)] || {};
+
+        let html = meta.downloadable
+            ? `<button class="download-video-btn" onclick="downloadVideo('${channelId}', '${filename}')"><i class="fas fa-download"></i> Download</button>`
+            : `<button class="download-video-btn" disabled title="The uploader has not enabled downloads for this video"><i class="fas fa-lock"></i> Streaming only</button>`;
+
+        if (meta.isOwner) {
+            html += `<label class="download-toggle-row" style="margin-left:12px;">
+                <input type="checkbox" ${meta.downloadable ? 'checked' : ''} onchange="toggleVideoDownloadable('${channelId}', '${filename}')">
+                Allow downloads
+            </label>`;
+        }
+        row.innerHTML = html;
+    }
+
+    // Video Player Functions
+    function openVideoPlayer(channelId, filename, title, channelName) {
+        const meta = videoMetaMap[videoMetaKey(channelId, filename)] || {};
+        const streamUrl = withAuthParam(`${API_BASE}/stream/${channelId}/${filename}`);
+        videoSource.src = streamUrl;
+        const resolvedTitle = title || meta.title || filename;
+        videoTitle.textContent = resolvedTitle;
+        videoChannel.textContent = channelName || meta.channelName || '';
+        if (videoDescription) {
+            const description = meta.description || '';
+            videoDescription.textContent = description;
+            videoDescription.style.display = description ? 'block' : 'none';
+        }
+        currentQuizChannel = channelId;
+        currentQuizFilename = filename;
+        currentQuizVideoTitle = resolvedTitle;
+        renderPlayerDownloadRow(channelId, filename);
+        videoPlayer.load();
+        videoPlayerModal.classList.add('show');
+        document.body.style.overflow = 'hidden';
+    }
+
+    function closeVideoPlayer() {
+        videoPlayer.pause();
+        videoPlayerModal.classList.remove('show');
+        document.body.style.overflow = '';
+        setTimeout(() => {
+            videoSource.src = '';
+            videoPlayer.load();
+        }, 100);
+    }
+
+    document.addEventListener('keydown', function(e) {
+        if (e.key === 'Escape' && videoPlayerModal.classList.contains('show')) {
+            closeVideoPlayer();
+        }
+    });
+
+    videoPlayerModal.addEventListener('click', function(e) {
+        if (e.target === videoPlayerModal) {
+            closeVideoPlayer();
+        }
+    });
+
+    // ===== Quiz Feature =====
+
+    window.openQuizModal = async function() {
+        if (!currentQuizChannel || !currentQuizFilename) return;
+        quizModal.classList.add('show');
+        document.body.style.overflow = 'hidden';
+        quizModalTitle.innerHTML = `<i class="fas fa-clipboard-list"></i> ${escapeHtml(currentQuizVideoTitle)}`;
+        switchQuizTab('take');
+    };
+
+    window.closeQuizModal = function() {
+        quizModal.classList.remove('show');
+        document.body.style.overflow = '';
+    };
+
+    quizModal.addEventListener('click', function(e) {
+        if (e.target === quizModal) closeQuizModal();
+    });
+
+    document.addEventListener('keydown', function(e) {
+        if (e.key === 'Escape' && quizModal.classList.contains('show')) {
+            closeQuizModal();
+        }
+    });
+
+    window.switchQuizTab = function(tab) {
+        quizTabTake.classList.toggle('active', tab === 'take');
+        quizTabManage.classList.toggle('active', tab === 'manage');
+        quizTakeSection.style.display = tab === 'take' ? 'block' : 'none';
+        quizManageSection.style.display = tab === 'manage' ? 'block' : 'none';
+        if (tab === 'take') {
+            loadQuizForTaking();
+        } else {
+            loadQuizForManaging();
+        }
+    };
+
+    async function loadQuizForTaking() {
+        quizResultSection.style.display = 'none';
+        quizTakeBody.style.display = 'block';
+        quizAnswers = {};
+        quizLastResult = null;
+        quizTakeBody.innerHTML = '<p style="text-align:center;color:#4a6a8a;padding:20px;"><i class="fas fa-spinner fa-spin"></i> Loading quiz...</p>';
+        try {
+            const res = await apiFetch(`${API_BASE}/quiz/${currentQuizChannel}/${currentQuizFilename}`);
+            const data = await res.json();
+            quizTakeQuestions = data.questions || [];
+            renderQuizTake();
+        } catch (err) {
+            quizTakeBody.innerHTML = '<p style="text-align:center;color:#dc3545;padding:20px;">Failed to load quiz.</p>';
+        }
+    }
+
+    function renderQuizTake() {
+        if (!quizTakeQuestions.length) {
+            quizTakeBody.innerHTML = `
+                <div style="text-align:center;padding:24px;color:#4a6a8a;">
+                    <i class="fas fa-clipboard-question" style="font-size:28px;display:block;margin-bottom:10px;"></i>
+                    No quiz has been added for this video yet.<br>Use "Manage Questions" to create one.
+                </div>`;
+            return;
+        }
+        let html = `<input type="text" class="quiz-student-name-input" id="quizStudentNameInput" placeholder="Enter your name" maxlength="120">`;
+        quizTakeQuestions.forEach((q, i) => {
+            html += `<div class="quiz-take-question">
+                <div class="q-text">${i + 1}. ${escapeHtml(q.question)}</div>
+                ${(q.options || []).map((opt, oi) => `
+                    <label class="quiz-take-option">
+                        <input type="radio" name="quizQ_${i}" value="${oi}" onchange="setQuizAnswer('${escapeForAttr(q.id)}', ${oi})">
+                        <span>${escapeHtml(opt)}</span>
+                    </label>
+                `).join('')}
+            </div>`;
+        });
+        html += `<div class="modal-actions" style="margin-top:10px;">
+            <button class="cancel-btn" onclick="closeQuizModal()">Close</button>
+            <button class="upload-confirm-btn" onclick="submitQuiz()">Submit Quiz</button>
+        </div>`;
+        quizTakeBody.innerHTML = html;
+    }
+
+    window.setQuizAnswer = function(qid, idx) {
+        quizAnswers[qid] = idx;
+    };
+
+    window.submitQuiz = async function() {
+        const nameInput = document.getElementById('quizStudentNameInput');
+        const studentName = (nameInput && nameInput.value.trim()) || 'Student';
+        if (Object.keys(quizAnswers).length === 0) {
+            showToast('❌ Please answer at least one question', true);
+            return;
+        }
+        try {
+            const res = await apiFetch(`${API_BASE}/quiz/${currentQuizChannel}/${currentQuizFilename}/submit`, {
+                method: 'POST',
+                headers: { 'Content-Type': 'application/json' },
+                body: JSON.stringify({ student_name: studentName, answers: quizAnswers })
+            });
+            const data = await res.json();
+            if (!res.ok) {
+                showToast(`❌ ${data.error || 'Failed to submit quiz'}`, true);
+                return;
+            }
+            quizLastResult = data;
+            renderQuizResult(data, studentName);
+        } catch (err) {
+            showToast('❌ Failed to submit quiz', true);
+        }
+    };
+
+    function renderQuizResult(data, studentName) {
+        quizTakeBody.style.display = 'none';
+        quizResultSection.style.display = 'block';
+        let breakdownHtml = '';
+        (data.breakdown || []).forEach((item, i) => {
+            breakdownHtml += `
+                <div class="quiz-result-breakdown-item ${item.correct ? 'correct' : 'incorrect'}">
+                    <strong>${i + 1}. ${escapeHtml(item.question)}</strong><br>
+                    ${item.correct ? '✅' : '❌'} Your answer: ${escapeHtml(item.your_answer)}
+                    ${!item.correct ? `<br>✔️ Correct answer: ${escapeHtml(item.correct_answer)}` : ''}
+                </div>`;
+        });
+        quizResultBody.innerHTML = `
+            <div class="quiz-result-summary">
+                <div class="quiz-result-score">${data.score} / ${data.total}</div>
+                <div class="quiz-result-percentage">${data.percentage}% &middot; ${escapeHtml(studentName)}</div>
+                <button class="download-pdf-btn" onclick="downloadQuizPdf()">
+                    <i class="fas fa-file-pdf"></i> Download PDF
+                </button>
+            </div>
+            ${breakdownHtml}
+            <div class="modal-actions" style="margin-top:14px;">
+                <button class="cancel-btn" onclick="closeQuizModal()">Close</button>
+                <button class="upload-confirm-btn" onclick="retakeQuiz()">Retake Quiz</button>
+            </div>
+        `;
+    }
+
+    window.retakeQuiz = function() {
+        quizResultSection.style.display = 'none';
+        quizTakeBody.style.display = 'block';
+        quizAnswers = {};
+        renderQuizTake();
+    };
+
+    window.downloadQuizPdf = function() {
+        if (!quizLastResult || !quizLastResult.result_id) return;
+        const url = withAuthParam(`${API_BASE}/quiz/${currentQuizChannel}/${currentQuizFilename}/result/${quizLastResult.result_id}/pdf`);
+        window.open(url, '_blank');
+    };
+
+    async function loadQuizForManaging() {
+        quizManageBody.innerHTML = '<p style="text-align:center;color:#4a6a8a;padding:20px;"><i class="fas fa-spinner fa-spin"></i> Loading...</p>';
+        try {
+            const res = await apiFetch(`${API_BASE}/quiz/${currentQuizChannel}/${currentQuizFilename}/edit`);
+            const data = await res.json();
+            quizManageQuestions = (data.questions || []).map(q => ({
+                id: q.id || null,
+                type: q.type || 'mcq',
+                question: q.question || '',
+                options: (q.options && q.options.length ? q.options.slice() : ['', '']),
+                correct_index: typeof q.correct_index === 'number' ? q.correct_index : 0
+            }));
+            renderQuizManage();
+        } catch (err) {
+            quizManageBody.innerHTML = '<p style="text-align:center;color:#dc3545;padding:20px;">Failed to load quiz.</p>';
+        }
+    }
+
+    function buildQuestionCardHtml(q, index) {
+        const qType = q.type || 'mcq';
+        const options = q.options && q.options.length ? q.options : ['', ''];
+        let optionsHtml = '';
+        if (qType === 'tf') {
+            optionsHtml = `
+                <label>Correct Answer</label>
+                <select onchange="updateQuizQuestionField(${index}, 'correct_index', parseInt(this.value))">
+                    <option value="0" ${q.correct_index === 0 ? 'selected' : ''}>True</option>
+                    <option value="1" ${q.correct_index === 1 ? 'selected' : ''}>False</option>
+                </select>
+            `;
+        } else {
+            optionsHtml = `<label>Options (select the correct one)</label>`;
+            options.forEach((opt, oi) => {
+                optionsHtml += `
+                    <div class="quiz-option-row">
+                        <input type="radio" name="correct_${index}" ${q.correct_index === oi ? 'checked' : ''} onchange="updateQuizQuestionField(${index}, 'correct_index', ${oi})">
+                        <input type="text" value="${escapeForAttr(opt)}" placeholder="Option ${oi + 1}" oninput="updateQuizOption(${index}, ${oi}, this.value)">
+                        ${options.length > 2 ? `<i class="fas fa-times" style="cursor:pointer;color:#dc3545;" onclick="removeQuizOption(${index}, ${oi})"></i>` : ''}
+                    </div>
+                `;
+            });
+            optionsHtml += `<button type="button" class="add-option-btn" onclick="addQuizOption(${index})" ${options.length >= 6 ? 'disabled' : ''}>+ Add option</button>`;
+        }
+
+        return `
+            <div class="quiz-question-card">
+                <i class="fas fa-times remove-question-btn" onclick="removeQuizQuestion(${index})" title="Remove question"></i>
+                <label>Question Type</label>
+                <select onchange="changeQuizQuestionType(${index}, this.value)">
+                    <option value="mcq" ${qType === 'mcq' ? 'selected' : ''}>Multiple Choice</option>
+                    <option value="tf" ${qType === 'tf' ? 'selected' : ''}>True / False</option>
+                </select>
+                <label>Question</label>
+                <textarea rows="2" placeholder="Enter your question..." oninput="updateQuizQuestionField(${index}, 'question', this.value)">${escapeHtml(q.question || '')}</textarea>
+                ${optionsHtml}
+            </div>
+        `;
+    }
+
+    function renderQuizManage() {
+        let html = '';
+        quizManageQuestions.forEach((q, i) => {
+            html += buildQuestionCardHtml(q, i);
+        });
+        html += `<button type="button" class="add-question-btn" onclick="addQuizQuestion()"><i class="fas fa-plus"></i> Add Question</button>`;
+        html += `<div class="modal-actions">
+            <button class="cancel-btn" onclick="closeQuizModal()">Close</button>
+            <button class="upload-confirm-btn" onclick="saveQuizQuestions()">Save Quiz</button>
+        </div>`;
+        quizManageBody.innerHTML = html;
+    }
+
+    window.addQuizQuestion = function() {
+        quizManageQuestions.push({ id: null, type: 'mcq', question: '', options: ['', ''], correct_index: 0 });
+        renderQuizManage();
+    };
+
+    window.removeQuizQuestion = function(index) {
+        quizManageQuestions.splice(index, 1);
+        renderQuizManage();
+    };
+
+    window.changeQuizQuestionType = function(index, type) {
+        const q = quizManageQuestions[index];
+        q.type = type;
+        q.options = type === 'tf' ? ['True', 'False'] : ['', ''];
+        q.correct_index = 0;
+        renderQuizManage();
+    };
+
+    window.updateQuizQuestionField = function(index, field, value) {
+        quizManageQuestions[index][field] = value;
+    };
+
+    window.updateQuizOption = function(index, optIndex, value) {
+        quizManageQuestions[index].options[optIndex] = value;
+    };
+
+    window.addQuizOption = function(index) {
+        const q = quizManageQuestions[index];
+        if (q.options.length < 6) {
+            q.options.push('');
+            renderQuizManage();
+        }
+    };
+
+    window.removeQuizOption = function(index, optIndex) {
+        const q = quizManageQuestions[index];
+        if (q.options.length <= 2) return;
+        q.options.splice(optIndex, 1);
+        if (q.correct_index >= q.options.length || q.correct_index === optIndex) {
+            q.correct_index = 0;
+        }
+        renderQuizManage();
+    };
+
+    window.saveQuizQuestions = async function() {
+        if (!quizManageQuestions.length) {
+            showToast('❌ Add at least one question before saving', true);
+            return;
+        }
+        for (let i = 0; i < quizManageQuestions.length; i++) {
+            const q = quizManageQuestions[i];
+            if (!q.question || !q.question.trim()) {
+                showToast(`❌ Question ${i + 1} needs question text`, true);
+                return;
+            }
+            if (q.type === 'mcq' && q.options.filter(o => o && o.trim()).length < 2) {
+                showToast(`❌ Question ${i + 1} needs at least 2 options`, true);
+                return;
+            }
+        }
+        try {
+            const res = await apiFetch(`${API_BASE}/quiz/${currentQuizChannel}/${currentQuizFilename}`, {
+                method: 'POST',
+                headers: { 'Content-Type': 'application/json' },
+                body: JSON.stringify({ questions: quizManageQuestions })
+            });
+            const data = await res.json();
+            if (!res.ok) {
+                showToast(`❌ ${data.error || 'Failed to save quiz'}`, true);
+                return;
+            }
+            showToast(`✅ Quiz saved with ${data.count} question${data.count !== 1 ? 's' : ''}`);
+            switchQuizTab('take');
+        } catch (err) {
+            showToast('❌ Failed to save quiz', true);
+        }
+    };
+
+    // Check trial status
+    async function checkTrialStatus() {
+        try {
+            const response = await apiFetch(`${API_BASE}/api/trial-status`);
+            if (response.ok) {
+                const data = await response.json();
+                const banner = document.getElementById('trialBanner');
+                const hoursSpan = document.getElementById('trialHours');
+                
+                if (data.valid) {
+                    banner.style.display = 'block';
+                    hoursSpan.textContent = Math.floor(data.hours_remaining);
+                    // Update every minute
+                    setInterval(async () => {
+                        const refreshResponse = await apiFetch(`${API_BASE}/api/trial-status`);
+                        if (refreshResponse.ok) {
+                            const refreshData = await refreshResponse.json();
+                            if (refreshData.valid) {
+                                hoursSpan.textContent = Math.floor(refreshData.hours_remaining);
+                            } else {
+                                window.location.reload();
+                            }
+                        }
+                    }, 60000);
+                } else {
+                    banner.style.display = 'none';
+                    setTimeout(() => {
+                        window.location.reload();
+                    }, 1000);
+                }
+            }
+        } catch (error) {
+            console.error('Error checking trial status:', error);
+        }
+    }
+
+    async function checkServerStatus() {
+        try {
+            const response = await apiFetch(`${API_BASE}/channels`, { signal: AbortSignal.timeout(3000) });
+            if (response.ok) {
+                const data = await response.json();
+                channels = data.channels;
+                isServerOnline = true;
+                statusDot.className = 'status-dot online';
+                statusText.textContent = 'Online';
+                return true;
+            }
+        } catch (error) {
+            console.log('Server offline:', error.message);
+        }
+        isServerOnline = false;
+        statusDot.className = 'status-dot offline';
+        statusText.textContent = 'Offline';
+        return false;
+    }
+
+    function loadChannels() {
+        let tabsHtml = `<div class="channel-tab active" data-channel="all" onclick="switchChannel('all')">
+            <i class="fas fa-th"></i> All Channels <span class="file-count" id="allCount">0</span>
+        </div>`;
+        
+        channels.forEach(channel => {
+            tabsHtml += `<div class="channel-tab" data-channel="${channel.id}" onclick="switchChannel('${channel.id}')">
+                <span class="channel-dot" style="background: ${channel.color}"></span>
+                ${channel.name} <span class="file-count" id="count_${channel.id}">0</span>
+            </div>`;
+        });
+        document.getElementById('channelTabs').innerHTML = tabsHtml;
+
+        let filterHtml = `<option value="">All Channels</option>`;
+        channels.forEach(channel => {
+            filterHtml += `<option value="${channel.id}">${channel.name}</option>`;
+        });
+        sidebarChannelFilter.innerHTML = filterHtml;
+
+        let optionsHtml = '';
+        channels.forEach(channel => {
+            optionsHtml += `<div class="channel-option" data-channel="${channel.id}" onclick="selectChannel('${channel.id}')">
+                <i class="${channel.icon}" style="color: ${channel.color}"></i>
+                <div class="info">
+                    <div class="name">${channel.name}</div>
+                    <div class="desc">${channel.description}</div>
+                </div>
+            </div>`;
+        });
+        channelOptions.innerHTML = optionsHtml;
+    }
+
+    window.switchChannel = function(channelId) {
+        currentChannel = channelId;
+        document.querySelectorAll('.channel-tab').forEach(tab => {
+            tab.classList.toggle('active', tab.dataset.channel === channelId);
+        });
+        sidebarChannelFilter.value = channelId === 'all' ? '' : channelId;
+        refreshVideos(channelId);
+    };
+
+    window.applySidebarFilter = function() {
+        const channel = sidebarChannelFilter.value;
+        currentChannel = channel || 'all';
+        document.querySelectorAll('.channel-tab').forEach(tab => {
+            tab.classList.toggle('active', tab.dataset.channel === currentChannel);
+        });
+        refreshVideos(currentChannel);
+    };
+
+    window.selectChannel = function(channelId) {
+        selectedChannel = channelId;
+        document.querySelectorAll('.channel-option').forEach(opt => {
+            opt.classList.toggle('selected', opt.dataset.channel === channelId);
+        });
+    };
+
+    function openUploadModal(files) {
+        pendingFiles = files;
+        selectedChannel = channels.length > 0 ? channels[0].id : '';
+        document.querySelectorAll('.channel-option').forEach(opt => {
+            opt.classList.toggle('selected', opt.dataset.channel === selectedChannel);
+        });
+        uploadModal.classList.add('show');
+        
+        if (fileCountBadge) {
+            fileCountBadge.textContent = `${files.length} file${files.length > 1 ? 's' : ''}`;
+        }
+        
+        pendingDescriptions = {};
+        pendingDownloadable = {};
+
+        let previewHtml = '';
+        for (let i = 0; i < files.length; i++) {
+            const file = files[i];
+            const size = formatSize(file.size);
+            pendingDownloadable[file.name] = false;
+            previewHtml += `
+                <div class="file-preview-item">
+                    <div class="file-preview-header">
+                        <span>📹 ${file.name}</span>
+                        <span class="file-size-small">${size}</span>
+                    </div>
+                    <textarea class="file-description-input" placeholder="Add a description for this video (optional)..."
+                        data-file-index="${i}" oninput="updatePendingDescription(${i}, '${escapeForAttr(file.name)}', this.value)"></textarea>
+                    <label class="download-toggle-row">
+                        <input type="checkbox" onchange="updatePendingDownloadable('${escapeForAttr(file.name)}', this.checked)">
+                        Allow this video to be downloaded (otherwise it can only be streamed)
+                    </label>
+                </div>`;
+        }
+        fileListPreview.innerHTML = previewHtml;
+        
+        document.getElementById('uploadProgressContainer').style.display = 'none';
+        document.getElementById('uploadProgressList').innerHTML = '';
+        uploadConfirmBtn.disabled = false;
+    }
+
+    window.closeUploadModal = function() {
+        uploadModal.classList.remove('show');
+        pendingFiles = null;
+        pendingDescriptions = {};
+        pendingDownloadable = {};
+        selectedChannel = '';
+        fileInput.value = '';
+        fileListPreview.innerHTML = '<div style="color: #4a6a8a; font-size: 13px; text-align: center; padding: 4px 0;">No files selected</div>';
+        if (fileCountBadge) fileCountBadge.textContent = '0 files';
+        document.getElementById('uploadProgressContainer').style.display = 'none';
+        uploadConfirmBtn.disabled = false;
+    };
+
+    window.confirmUpload = async function() {
+        if (!pendingFiles || pendingFiles.length === 0) {
+            showToast('No files selected', true);
+            return;
+        }
+        if (!selectedChannel) {
+            showToast('Please select a channel', true);
+            return;
+        }
+
+        // Check for filenames that already exist in the selected channel
+        try {
+            const dupResponse = await apiFetch(`${API_BASE}/check-duplicate`, {
+                method: 'POST',
+                headers: { 'Content-Type': 'application/json' },
+                body: JSON.stringify({
+                    channel: selectedChannel,
+                    filenames: pendingFiles.map(f => f.name)
+                })
+            });
+            if (dupResponse.ok) {
+                const dupData = await dupResponse.json();
+                const duplicates = dupData.duplicates || [];
+                if (duplicates.length > 0) {
+                    const list = duplicates.join('\n  • ');
+                    const proceed = confirm(
+                        `⚠️ ${duplicates.length} file${duplicates.length !== 1 ? 's' : ''} with the same name already ` +
+                        `exist${duplicates.length !== 1 ? '' : 's'} in ${getChannelName(selectedChannel)}:\n\n  • ${list}\n\n` +
+                        `They will be uploaded as separate copies (auto-renamed) if you continue.\n\n` +
+                        `Click OK to continue the upload, or Cancel to stop.`
+                    );
+                    if (!proceed) {
+                        showToast('Upload cancelled', true);
+                        return;
+                    }
+                }
+            }
+        } catch (dupError) {
+            console.error('Error checking for duplicate files:', dupError);
+            // If the duplicate check itself fails, fall through and let the upload proceed
+        }
+
+        uploadConfirmBtn.disabled = true;
+        
+        const formData = new FormData();
+        for (let i = 0; i < pendingFiles.length; i++) {
+            formData.append('videos', pendingFiles[i]);
+        }
+        formData.append('channel', selectedChannel);
+        formData.append('descriptions', JSON.stringify(pendingDescriptions));
+        formData.append('downloadable', JSON.stringify(pendingDownloadable));
+
+        const progressContainer = document.getElementById('uploadProgressContainer');
+        const progressList = document.getElementById('uploadProgressList');
+        progressContainer.style.display = 'block';
+        progressList.innerHTML = '';
+        
+        for (let i = 0; i < pendingFiles.length; i++) {
+            const file = pendingFiles[i];
+            const item = document.createElement('div');
+            item.className = 'upload-progress-item';
+            item.id = `progress_${i}`;
+            item.innerHTML = `
+                <span class="status-icon"><i class="fas fa-spinner fa-spin"></i></span>
+                <span class="file-name">${file.name}</span>
+                <span class="file-status uploading">Uploading...</span>
+            `;
+            progressList.appendChild(item);
+        }
+
+        try {
+            showToast(`📤 Uploading ${pendingFiles.length} files to ${getChannelName(selectedChannel)}...`);
+            
+            const response = await apiFetch(`${API_BASE}/upload`, {
+                method: 'POST',
+                body: formData
+            });
+
+            if (!response.ok) {
+                const errorData = await response.json();
+                throw new Error(errorData.error || 'Upload failed');
+            }
+
+            const result = await response.json();
+            
+            for (let i = 0; i < pendingFiles.length; i++) {
+                const item = document.getElementById(`progress_${i}`);
+                const success = result.successful.find(s => s.original_name === pendingFiles[i].name);
+                if (success) {
+                    item.innerHTML = `
+                        <span class="status-icon"><i class="fas fa-check-circle" style="color: #28a745;"></i></span>
+                        <span class="file-name">${pendingFiles[i].name}</span>
+                        <span class="file-status success">✓ Uploaded</span>
+                    `;
+                } else {
+                    const error = result.errors.find(e => e.filename === pendingFiles[i].name);
+                    item.innerHTML = `
+                        <span class="status-icon"><i class="fas fa-times-circle" style="color: #dc3545;"></i></span>
+                        <span class="file-name">${pendingFiles[i].name}</span>
+                        <span class="file-status error">✗ ${error ? error.error : 'Failed'}</span>
+                    `;
+                }
+            }
+            
+            showToast(`✅ Uploaded ${result.successful.length} files to ${getChannelName(selectedChannel)}`);
+            
+            setTimeout(async () => {
+                await refreshVideos(currentChannel);
+                await refreshFolder(currentSearchQuery);
+                setTimeout(() => {
+                    progressContainer.style.display = 'none';
+                    uploadModal.classList.remove('show');
+                    pendingFiles = null;
+                    pendingDescriptions = {};
+                    pendingDownloadable = {};
+                    fileInput.value = '';
+                    if (fileCountBadge) fileCountBadge.textContent = '0 files';
+                    fileListPreview.innerHTML = '<div style="color: #4a6a8a; font-size: 13px; text-align: center; padding: 4px 0;">No files selected</div>';
+                    uploadConfirmBtn.disabled = false;
+                }, 2000);
+            }, 1000);
+            
+        } catch (error) {
+            console.error('Upload error:', error);
+            showToast(`❌ Upload failed: ${error.message}`, true);
+            for (let i = 0; i < pendingFiles.length; i++) {
+                const item = document.getElementById(`progress_${i}`);
+                if (item) {
+                    item.innerHTML = `
+                        <span class="status-icon"><i class="fas fa-times-circle" style="color: #dc3545;"></i></span>
+                        <span class="file-name">${pendingFiles[i].name}</span>
+                        <span class="file-status error">✗ ${error.message}</span>
+                    `;
+                }
+            }
+            uploadConfirmBtn.disabled = false;
+            setTimeout(() => {
+                progressContainer.style.display = 'none';
+            }, 5000);
+        }
+    };
+
+    async function refreshVideos(channel = 'all') {
+        if (!isServerOnline) {
+            videoGrid.innerHTML = `<div style="grid-column: 1/-1; text-align: center; padding: 40px; color: #4a6a8a;">
+                <i class="fas fa-exclamation-triangle" style="font-size: 32px;"></i>
+                <p>Server offline. Please start the Flask server.</p>
+            </div>`;
+            return;
+        }
+
+        try {
+            const url = channel !== 'all' ? `${API_BASE}/list-files?channel=${channel}` : `${API_BASE}/list-files`;
+            const response = await apiFetch(url);
+            if (!response.ok) throw new Error('Failed to fetch videos');
+            const data = await response.json();
+            
+            if (allCount) allCount.textContent = data.count;
+            
+            if (data.files.length === 0) {
+                videoGrid.innerHTML = `<div style="grid-column: 1/-1; text-align: center; padding: 40px; color: #4a6a8a;">
+                    <i class="fas fa-inbox" style="font-size: 32px;"></i>
+                    <p>No videos in this channel yet</p>
+                </div>`;
+                return;
+            }
+
+            let html = '';
+            data.files.forEach(file => {
+                const color = getChannelColor(file.channel);
+                const icon = getChannelIcon(file.channel);
+                const channelName = file.channel_name || getChannelName(file.channel);
+                const duration = file.duration_formatted || '--:--';
+                const title = file.original_name || file.name;
+
+                const metaKey = videoMetaKey(file.channel, file.name);
+                videoMetaMap[metaKey] = Object.assign({}, videoMetaMap[metaKey], {
+                    title: title,
+                    channelName: channelName,
+                    description: file.description || '',
+                    downloadable: !!file.downloadable,
+                    isOwner: !!file.is_owner
+                });
+                
+                let thumbnailHtml = '';
+                if (file.thumbnail) {
+                    thumbnailHtml = `<img src="data:image/png;base64,${file.thumbnail}" alt="${escapeHtml(title)}">`;
+                } else {
+                    thumbnailHtml = `
+                        <div class="no-thumbnail">
+                            <i class="${icon}"></i>
+                            <span>No thumbnail</span>
+                        </div>
+                    `;
+                }
+
+                const descriptionHtml = file.description
+                    ? `<div class="card-description">${highlightText(truncateText(file.description, 600), currentSearchQuery)}</div>`
+                    : '';
+
+                const downloadBadgeHtml = file.downloadable
+                    ? `<span class="file-download-badge on"><i class="fas fa-download"></i> Downloadable</span>`
+                    : `<span class="file-download-badge off"><i class="fas fa-lock"></i> Streaming only</span>`;
+
+                const cardId = `vcard_${videoMetaKey(file.channel, file.name).replace(/[^a-zA-Z0-9]/g, '_')}`;
+
+                html += `
+                    <div class="video-card" id="${cardId}" onclick="openVideoPlayer('${file.channel}', '${file.name}')">
+                        <div class="thumbnail-wrapper">
+                            ${thumbnailHtml}
+                            <div class="duration-badge"><i class="fas fa-clock"></i> ${duration}</div>
+                            <div class="play-icon-overlay">
+                                <i class="fas fa-play-circle"></i>
+                            </div>
+                        </div>
+                        <div class="card-body">
+                            <div class="card-title">${highlightText(title, currentSearchQuery)}</div>
+                            ${descriptionHtml}
+                            <div class="channel-name">
+                                <i class="fas fa-user" style="color: ${color}"></i>
+                                <span class="channel-badge" style="background: ${color}">${channelName}</span>
+                                ${downloadBadgeHtml}
+                            </div>
+                            <div class="meta-row">
+                                <span><i class="fas fa-file"></i> ${file.size_formatted}</span>
+                                <span><i class="fas fa-clock"></i> ${file.uploaded_at ? new Date(file.uploaded_at).toLocaleDateString() : 'Recently'}</span>
+                            </div>
+                            <div class="rating-row" data-channel="${file.channel}" data-filename="${file.name}">
+                                <button class="rate-btn like-btn ${file.user_vote === 'like' ? 'active' : ''}" onclick="rateVideo('${file.channel}', '${file.name}', 'like', event)" title="Like">
+                                    <i class="fas fa-thumbs-up"></i> <span class="like-count">${file.likes || 0}</span>
+                                </button>
+                                <button class="rate-btn dislike-btn ${file.user_vote === 'dislike' ? 'active' : ''}" onclick="rateVideo('${file.channel}', '${file.name}', 'dislike', event)" title="Dislike">
+                                    <i class="fas fa-thumbs-down"></i> <span class="dislike-count">${file.dislikes || 0}</span>
+                                </button>
+                                <button class="share-btn" onclick="shareVideo('${file.channel}', '${file.name}', event)" title="Share">
+                                    <i class="fas fa-share-alt"></i> <span class="share-count">${file.shares || 0}</span>
+                                </button>
+                                ${file.downloadable ? `<button class="share-btn" onclick="downloadVideo('${file.channel}', '${file.name}', event)" title="Download">
+                                    <i class="fas fa-download"></i>
+                                </button>` : ''}
+                                ${file.is_owner ? `<button class="share-btn delete-btn" onclick="deleteVideo('${file.channel}', '${file.name}', event)" title="Delete this video">
+                                    <i class="fas fa-trash"></i>
+                                </button>` : ''}
+                            </div>
+                        </div>
+                    </div>
+                `;
+            });
+            videoGrid.innerHTML = html;
+        } catch (error) {
+            console.error('Error refreshing videos:', error);
+            videoGrid.innerHTML = `<div style="grid-column: 1/-1; text-align: center; padding: 40px; color: #dc3545;">
+                <i class="fas fa-exclamation-circle" style="font-size: 32px;"></i>
+                <p>Error loading videos: ${error.message}</p>
+            </div>`;
+        }
+    }
+
+    async function refreshFolder(searchQuery = '') {
+        if (!isServerOnline) {
+            folderFileList.innerHTML = `<div class="folder-error">
+                <i class="fas fa-exclamation-triangle"></i> 
+                Server offline. Please start the Flask server.
+            </div>`;
+            return null;
+        }
+
+        try {
+            let url = `${API_BASE}/list-files`;
+            const params = new URLSearchParams();
+            if (searchQuery) params.append('search', searchQuery);
+            const channelFilter = sidebarChannelFilter.value;
+            if (channelFilter) params.append('channel', channelFilter);
+            if (params.toString()) url += '?' + params.toString();
+            
+            const response = await apiFetch(url);
+            if (!response.ok) throw new Error('Failed to fetch file list');
+            const data = await response.json();
+            const totalHits = data.total_hits !== undefined ? data.total_hits : data.count;
+            
+            if (searchQuery) {
+                if (searchResultCount) {
+                    searchResultCount.style.display = 'inline';
+                    searchResultCount.textContent = `${totalHits} result${totalHits !== 1 ? 's' : ''}`;
+                }
+                if (searchHitsBanner && searchHitsText) {
+                    searchHitsBanner.style.display = 'block';
+                    searchHitsText.textContent = `${totalHits} total hit${totalHits !== 1 ? 's' : ''} for "${searchQuery}"`;
+                }
+                if (clearSearchBtn) clearSearchBtn.classList.add('show');
+            } else {
+                if (searchResultCount) searchResultCount.style.display = 'none';
+                if (searchHitsBanner) searchHitsBanner.style.display = 'none';
+                if (clearSearchBtn) clearSearchBtn.classList.remove('show');
+            }
+            
+            if (data.files.length === 0) {
+                const msg = searchQuery ? `No files matching "${searchQuery}"` : 'No videos uploaded yet';
+                folderFileList.innerHTML = `<div class="empty-folder"><i class="fas fa-inbox"></i> ${msg}</div>`;
+                if (storageUsed) storageUsed.textContent = '0 MB';
+                return data;
+            }
+
+            let html = '';
+            let totalSize = 0;
+            data.files.forEach(file => {
+                totalSize += file.size;
+                const sizeStr = file.size_formatted || formatSize(file.size);
+                const title = file.original_name || file.name;
+                const displayName = highlightText(title, searchQuery);
+                const color = getChannelColor(file.channel);
+                const channelName = file.channel_name || getChannelName(file.channel);
+                const key = videoMetaKey(file.channel, file.name);
+                const rowId = `folderRow_${key.replace(/[^a-zA-Z0-9]/g, '_')}`;
+
+                videoMetaMap[key] = Object.assign({}, videoMetaMap[key], {
+                    title: title,
+                    channelName: channelName,
+                    description: file.description || '',
+                    thumbnail: file.thumbnail || null,
+                    downloadable: !!file.downloadable,
+                    isOwner: !!file.is_owner
+                });
+
+                const thumbHtml = file.thumbnail
+                    ? `<img src="data:image/png;base64,${file.thumbnail}" alt="${escapeHtml(title)}">`
+                    : `<div class="folder-file-no-thumb"><i class="fas fa-file-video"></i></div>`;
+                const descHtml = file.description
+                    ? `<a href="javascript:void(0)" class="folder-file-desc-link" onclick="openVideoPlayer('${file.channel}', '${file.name}'); event.stopPropagation();">${highlightText(truncateText(file.description, 200), searchQuery)}</a>`
+                    : `<div class="folder-file-desc folder-file-desc-empty">No description added</div>`;
+
+                const itemId = `fitem_${key.replace(/[^a-zA-Z0-9]/g, '_')}`;
+
+                html += `
+                    <div class="folder-file-item" id="${itemId}">
+                        <div class="folder-file" onclick="toggleFolderFileDetail('${rowId}', event)">
+                            <i class="fas fa-chevron-right folder-file-caret" id="${rowId}_caret"></i>
+                            <i class="fas fa-file-video" style="color: ${color}"></i>
+                            <span>${displayName}</span>
+                            <span class="file-channel" style="background: ${color}">${channelName}</span>
+                            <span class="file-size">${sizeStr}</span>
+                            ${file.is_owner ? `<button class="folder-file-delete-btn" onclick="deleteVideo('${file.channel}', '${file.name}', event)" title="Delete this video">
+                                <i class="fas fa-trash"></i>
+                            </button>` : ''}
+                        </div>
+                        <div class="folder-file-detail" id="${rowId}">
+                            <div class="folder-file-thumb">${thumbHtml}</div>
+                            <div class="folder-file-detail-body">
+                                ${descHtml}
+                                <button class="folder-file-play-btn" onclick="openVideoPlayer('${file.channel}', '${file.name}'); event.stopPropagation();">
+                                    <i class="fas fa-play"></i> Play video
+                                </button>
+                            </div>
+                        </div>
+                    </div>
+                `;
+            });
+            folderFileList.innerHTML = html;
+            if (storageUsed) storageUsed.textContent = data.total_size_formatted || formatSize(totalSize);
+            return data;
+        } catch (error) {
+            console.error('Error refreshing folder:', error);
+            folderFileList.innerHTML = `<div class="folder-error">Error loading files: ${error.message}</div>`;
+            return null;
+        }
+    }
+
+    window.toggleFolderFileDetail = function(rowId, event) {
+        if (event) event.stopPropagation();
+        const detail = document.getElementById(rowId);
+        const caret = document.getElementById(`${rowId}_caret`);
+        if (!detail) return;
+        const isOpen = detail.classList.contains('show');
+
+        // Collapse any other open rows so only one preview is visible at a time
+        document.querySelectorAll('.folder-file-detail.show').forEach(el => {
+            if (el.id !== rowId) {
+                el.classList.remove('show');
+                const otherCaret = document.getElementById(`${el.id}_caret`);
+                if (otherCaret) otherCaret.classList.remove('rotated');
+            }
+        });
+
+        detail.classList.toggle('show', !isOpen);
+        if (caret) caret.classList.toggle('rotated', !isOpen);
+    };
+
+    window.performFolderSearch = async function() {
+        const query = folderSearch.value.trim();
+        currentSearchQuery = query;
+        const data = await refreshFolder(query);
+        refreshVideos(currentChannel);
+        if (query) {
+            const totalHits = data ? (data.total_hits !== undefined ? data.total_hits : data.count) : 0;
+            showToast(`🔍 ${totalHits} total hit${totalHits !== 1 ? 's' : ''} found for "${query}"`);
+        }
+    };
+
+    window.clearFolderSearch = function() {
+        folderSearch.value = '';
+        currentSearchQuery = '';
+        refreshFolder('');
+        if (searchResultCount) searchResultCount.style.display = 'none';
+        if (searchHitsBanner) searchHitsBanner.style.display = 'none';
+        if (clearSearchBtn) clearSearchBtn.classList.remove('show');
+        refreshVideos(currentChannel);
+    };
+
+    window.performGlobalSearch = async function() {
+        const query = globalSearch.value.trim();
+        folderSearch.value = query;
+        currentSearchQuery = query;
+        const data = await refreshFolder(query);
+        refreshVideos(currentChannel);
+        if (query) {
+            if (clearSearchBtn) clearSearchBtn.classList.add('show');
+            const totalHits = data ? (data.total_hits !== undefined ? data.total_hits : data.count) : 0;
+            showToast(`🔍 ${totalHits} total hit${totalHits !== 1 ? 's' : ''} found for "${query}"`);
+        } else {
+            if (clearSearchBtn) clearSearchBtn.classList.remove('show');
+        }
+    };
+
+    globalSearch.addEventListener('keyup', function(event) {
+        if (event.key === 'Enter') {
+            performGlobalSearch();
+        }
+    });
+
+    const globalSearchBtn = document.getElementById('globalSearchBtn');
+    if (globalSearchBtn) {
+        globalSearchBtn.addEventListener('click', function() {
+            performGlobalSearch();
+        });
+    }
+
+    folderSearch.addEventListener('keyup', function(event) {
+        if (event.key === 'Enter') {
+            performFolderSearch();
+        }
+    });
+
+    uploadBtn.addEventListener('click', function(e) {
+        e.preventDefault();
+        if (!isServerOnline) {
+            showToast('❌ Server is offline. Start the server with: python3 flaskmestra.py', true);
+            return;
+        }
+        fileInput.click();
+    });
+
+    fileInput.addEventListener('change', function(e) {
+        const files = this.files;
+        if (!files || files.length === 0) return;
+
+        for (let i = 0; i < files.length; i++) {
+            if (!files[i].type.startsWith('video/')) {
+                showToast(`⚠️ "${files[i].name}" is not a video file. Only videos can be uploaded.`, true);
+                this.value = '';
+                return;
+            }
+        }
+
+        if (files.length > 20) {
+            showToast(`⚠️ Maximum 20 files allowed per upload. You selected ${files.length}.`, true);
+            this.value = '';
+            return;
+        }
+
+        const fileArray = Array.from(files);
+        openUploadModal(fileArray);
+    });
+
+    async function updateChannelCounts() {
+        for (const channel of channels) {
+            try {
+                const response = await apiFetch(`${API_BASE}/list-files?channel=${channel.id}`);
+                if (response.ok) {
+                    const data = await response.json();
+                    const countEl = document.getElementById(`count_${channel.id}`);
+                    if (countEl) countEl.textContent = data.count;
+                }
+            } catch (e) {
+                console.error('Error updating count for', channel.id);
+            }
+        }
+    }
+
+    // ---------------------------------------------------------------------
+    // AUTH: registration is required before the app can be used
+    // ---------------------------------------------------------------------
+    const authScreen = document.getElementById('authScreen');
+    const appRoot = document.getElementById('appRoot');
+    const authForm = document.getElementById('authForm');
+    const authUsername = document.getElementById('authUsername');
+    const authPassword = document.getElementById('authPassword');
+    const authDisplayName = document.getElementById('authDisplayName');
+    const authDisplayNameRow = document.getElementById('authDisplayNameRow');
+    const authError = document.getElementById('authError');
+    const authSubmitBtn = document.getElementById('authSubmitBtn');
+    const authToggleBtn = document.getElementById('authToggleBtn');
+    const authTitle = document.getElementById('authTitle');
+    const authSubtitle = document.getElementById('authSubtitle');
+    const currentUserLabel = document.getElementById('currentUserLabel');
+    const logoutBtn = document.getElementById('logoutBtn');
+
+    let authMode = 'login'; // 'login' | 'register'
+
+    function setAuthMode(mode) {
+        authMode = mode;
+        authError.style.display = 'none';
+        authForm.reset();
+        if (mode === 'register') {
+            authTitle.textContent = 'Create your account';
+            authSubtitle.textContent = 'Registration is required before you can use MergeMedia.';
+            authSubmitBtn.textContent = 'Register';
+            authToggleBtn.textContent = 'Already have an account? Log in';
+            authDisplayNameRow.style.display = 'block';
+        } else {
+            authTitle.textContent = 'Log in to MergeMedia';
+            authSubtitle.textContent = 'Please log in to continue.';
+            authSubmitBtn.textContent = 'Log In';
+            authToggleBtn.textContent = "Don't have an account? Register";
+            authDisplayNameRow.style.display = 'none';
+        }
+    }
+
+    authToggleBtn.addEventListener('click', () => {
+        setAuthMode(authMode === 'login' ? 'register' : 'login');
+    });
+
+    authForm.addEventListener('submit', async function(e) {
+        e.preventDefault();
+        authError.style.display = 'none';
+
+        const username = authUsername.value.trim();
+        const password = authPassword.value;
+        const displayName = authDisplayName.value.trim();
+
+        if (!username || !password) {
+            authError.textContent = 'Please fill in all required fields.';
+            authError.style.display = 'block';
+            return;
+        }
+
+        authSubmitBtn.disabled = true;
+        try {
+            const endpoint = authMode === 'register' ? '/auth/register' : '/auth/login';
+            const payload = authMode === 'register'
+                ? { username, password, display_name: displayName }
+                : { username, password };
+
+            const response = await apiFetch(`${API_BASE}${endpoint}`, {
+                method: 'POST',
+                headers: { 'Content-Type': 'application/json' },
+                body: JSON.stringify(payload)
+            });
+            const data = await response.json();
+
+            if (!response.ok) {
+                authError.textContent = data.error || 'Something went wrong. Please try again.';
+                authError.style.display = 'block';
+                return;
+            }
+
+            currentUser = { username: data.username, display_name: data.display_name };
+            setAuthToken(data.token);
+            await enterApp();
+
+        } catch (err) {
+            authError.textContent = 'Could not reach the server. Please try again.';
+            authError.style.display = 'block';
+        } finally {
+            authSubmitBtn.disabled = false;
+        }
+    });
+
+    logoutBtn.addEventListener('click', async () => {
+        try {
+            await apiFetch(`${API_BASE}/auth/logout`, { method: 'POST' });
+        } catch (e) { /* ignore */ }
+        clearAuthToken();
+        currentUser = null;
+        showAuthScreen();
+    });
+
+    function showAuthScreen() {
+        appRoot.style.display = 'none';
+        authScreen.style.display = 'flex';
+        setAuthMode('login');
+    }
+
+    async function enterApp() {
+        authScreen.style.display = 'none';
+        appRoot.style.display = 'block';
+        if (currentUserLabel) {
+            currentUserLabel.textContent = currentUser.display_name || currentUser.username;
+        }
+        await startApp();
+    }
+
+    async function checkAuthStatus() {
+        if (!getAuthToken()) {
+            showAuthScreen();
+            return;
+        }
+        try {
+            const response = await apiFetch(`${API_BASE}/auth/me`);
+            const data = await response.json();
+            if (data.authenticated) {
+                currentUser = { username: data.username, display_name: data.display_name };
+                await enterApp();
+            } else {
+                clearAuthToken();
+                showAuthScreen();
+            }
+        } catch (e) {
+            showAuthScreen();
+        }
+    }
+
+    async function startApp() {
+        await checkServerStatus();
+        await checkTrialStatus();
+        if (isServerOnline) {
+            loadChannels();
+            await refreshVideos('all');
+            await refreshFolder('');
+            await updateChannelCounts();
+        }
+
+        setInterval(async () => {
+            if (!currentUser) return;
+            const wasOnline = isServerOnline;
+            await checkServerStatus();
+            if (isServerOnline) {
+                await refreshVideos(currentChannel);
+                await refreshFolder(currentSearchQuery);
+                await updateChannelCounts();
+            } else if (wasOnline !== isServerOnline) {
+                await refreshVideos(currentChannel);
+                await refreshFolder(currentSearchQuery);
+            }
+        }, 15000);
+    }
+
+    checkAuthStatus();
+    console.log('🚀 MergeMedia · Teacher Channels with Trial System');
+    console.log('⏰ 300-hour trial period from first use');
+    console.log('🔐 Registration required · 🔓 Downloads are per-video, uploader-controlled');
+    </script>
+</body>
+</html>
